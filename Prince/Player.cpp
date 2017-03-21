@@ -10,7 +10,7 @@
 #define JUMP_HEIGHT 96
 #define FALL_STEP 4
 
-//buenaaaasss
+
 enum PlayerAnims
 {
 	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, JUMP_FALL
