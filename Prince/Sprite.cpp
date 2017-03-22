@@ -106,5 +106,10 @@ void Sprite::setPosition(const glm::vec2 &pos)
 	position = pos;
 }
 
+bool Sprite::timetoChange(int animId){
+	if (currentKeyframe == animations[animId].keyframeDispl.size()-1 ) return true;
+	else return false;
+}
+
 
 
