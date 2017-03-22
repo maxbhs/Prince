@@ -13,8 +13,9 @@
 
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, START_MOVE_LEFT, START_MOVE_RIGHT, STOP_MOVE_LEFT, STOP_MOVE_RIGHT, 
-	SWITCH_TO_LEFT, SWITCH_TO_RIGHT, JUMP_LEFT_UP,JUMP_RIGHT_UP, JUMP_LEFT, JUMP_RIGHT, CLIMB_LEFT, CLIMB_RIGHT, DOWN_LEFT, DOWN_RIGHT
+	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, START_MOVE_LEFT, START_MOVE_RIGHT, STOP_MOVE_LEFT, STOP_MOVE_RIGHT,
+	SWITCH_TO_LEFT, SWITCH_TO_RIGHT, JUMP_LEFT_UP, JUMP_RIGHT_UP, JUMP_LEFT, JUMP_RIGHT, CLIMB_LEFT, CLIMB_RIGHT, DOWN_LEFT, DOWN_RIGHT,
+	FALL_LEFT, FALL_RIGHT
 };
 
 
@@ -23,7 +24,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	bJumping = false;
 	spritesheet.loadFromFile("sprites/sprites-prince.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(64,64), glm::vec2(0.05f, 0.05f), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(18);
+	sprite->setNumberAnimations(22);
 
 
 		sprite->setAnimationSpeed(STAND_LEFT, 8);
@@ -125,6 +126,16 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 		for (int i = 0; i < 10; i++){
 			sprite->addKeyframe(DOWN_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.25f));
 		}
+		
+		/*sprite->setAnimationSpeed(FALL_LEFT, 8);
+		for (int i = 1; i <= 4; i++){
+			sprite->addKeyframe(FALL_LEFT, glm::vec2(0.f + (1 - (i / 20.0f)), 0.2f));
+		}
+
+		sprite->setAnimationSpeed(FALL_RIGHT, 8);
+		for (int i = 0; i < 4; i++){
+			sprite->addKeyframe(FALL_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.2f));
+		}*/
 	
 		
 		
@@ -239,9 +250,10 @@ void Player::update(int deltaTime)
 
 	if (sprite->animation() == DOWN_RIGHT){
 		if (sprite->timetoChange(DOWN_RIGHT)){
-			sprite->changeAnimation(STAND_RIGHT);
+			sprite->changeAnimation(STAND_LEFT);
 		}
 	}
+
 	
 	
 	/*if(Game::instance().getSpecialKey(GLUT_KEY_LEFT))
