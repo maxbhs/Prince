@@ -22,7 +22,7 @@ public:
 	void setPosition(const glm::vec2 &pos);
 	
 private:
-	bool bJumping, bDown;
+	bool bJumping, bDown,canClimb;
 	glm::ivec2 tileMapDispl, posPlayer;
 	int jumpAngle, startY;
 	char last;
