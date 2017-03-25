@@ -25,6 +25,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
 	bJumping = false;
 	bDown = false;
+	//aux = false;
 	canClimb = false;
 	downPressed = false;
 	upPressed = false;
@@ -232,8 +233,10 @@ void Player::update(int deltaTime)
 	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT) && !bJumping)
 	{
 		if (!bDown){
-			if (sprite->animation() == STAND_LEFT){
-				sprite->changeAnimation(START_WALK_LEFT);
+			if (!upPressed){
+				if (sprite->animation() == STAND_LEFT){
+					sprite->changeAnimation(START_WALK_LEFT);
+				}
 			}
 			if (sprite->animation() == START_WALK_LEFT){
 				if (sprite->timetoChange(START_WALK_LEFT)){
@@ -244,7 +247,8 @@ void Player::update(int deltaTime)
 				sprite->changeAnimation(SWITCH_TO_LEFT);
 			}
 			if (sprite->animation() == MOVE_RIGHT){
-				sprite->changeAnimation(SWITCH_TO_LEFT_RUNNING);
+			
+			sprite->changeAnimation(SWITCH_TO_LEFT_RUNNING);
 			}
 			if (sprite->animation() == START_MOVE_RIGHT){
 				sprite->changeAnimation(SWITCH_TO_LEFT_RUNNING);
@@ -294,7 +298,6 @@ void Player::update(int deltaTime)
 				sprite->changeAnimation(MOVE_DOWN_LEFT);
 
 		}
-
 		if (sprite->animation() == START_MOVE_LEFT || sprite->animation() == MOVE_LEFT || sprite->animation() == START_JUMP_LEFT){
 			posPlayer.x -= 2;
 		}
@@ -318,8 +321,10 @@ void Player::update(int deltaTime)
 	else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT) && !bJumping)
 	{
 		if (!bDown){
-			if (sprite->animation() == STAND_RIGHT){
-				sprite->changeAnimation(START_WALK_RIGHT);
+			if (!upPressed){
+				if (sprite->animation() == STAND_RIGHT){
+					sprite->changeAnimation(START_WALK_RIGHT);
+				}
 			}
 			if (sprite->animation() == START_WALK_RIGHT){
 				if (sprite->timetoChange(START_WALK_RIGHT)){
@@ -379,7 +384,6 @@ void Player::update(int deltaTime)
 			if (sprite->animation() != MOVE_DOWN_RIGHT)
 				sprite->changeAnimation(MOVE_DOWN_RIGHT);
 		}
-
 		if (sprite->animation() == START_MOVE_RIGHT || sprite->animation() == MOVE_RIGHT || sprite->animation() == START_JUMP_RIGHT){
 			posPlayer.x += 2;
 		}
@@ -417,6 +421,9 @@ void Player::update(int deltaTime)
 	}
 	else if (Game::instance().getSpecialKey(GLUT_KEY_UP) && !upPressed){
 		upPressed = true;
+		/*if (Game::instance().getSpecialKey(GLUT_KEY_LEFT) || Game::instance().getSpecialKey(GLUT_KEY_RIGHT)){
+			aux = true;
+		}*/
 	}
 	else if (!Game::instance().getSpecialKey(GLUT_KEY_UP) && upPressed){
 		if (bDown){
@@ -428,13 +435,25 @@ void Player::update(int deltaTime)
 			}
 		}
 		else{
-			if (sprite->animation() == STAND_LEFT){
-				bJumping = true;
-				sprite->changeAnimation(START_JUMP_LEFT_UP);
-			}
-			else if (sprite->animation() == STAND_RIGHT){
-				bJumping = true;
-				sprite->changeAnimation(START_JUMP_RIGHT_UP);
+			//if (!aux){
+				if (sprite->animation() == STAND_LEFT){
+					bJumping = true;
+					sprite->changeAnimation(START_JUMP_LEFT_UP);
+				}
+				else if (sprite->animation() == STAND_RIGHT){
+					bJumping = true;
+					sprite->changeAnimation(START_JUMP_RIGHT_UP);
+				}
+			//}
+			else {
+				if (sprite->animation() == STAND_LEFT || sprite->animation() == START_WALK_LEFT || sprite->animation() == MOVE_LEFT || sprite->animation() == STOP_MOVE_LEFT){
+					bJumping = true;
+					sprite->changeAnimation(START_JUMP_LEFT);
+				}
+				else if (sprite->animation() == STAND_RIGHT || sprite->animation() == START_WALK_RIGHT || sprite->animation() == MOVE_RIGHT || sprite->animation() == STOP_MOVE_RIGHT){
+					bJumping = true;
+					sprite->changeAnimation(START_JUMP_RIGHT);
+				}
 			}
 		}
 		upPressed = false;
@@ -541,8 +560,9 @@ void Player::update(int deltaTime)
 			if (jumpAngle == 180){
 				posPlayer.y = startY;
 				bJumping = false;
+				//aux = false;
 				sprite->changeAnimation(MOVE_LEFT);
-			} else posPlayer.y = int(startY - 5 * sin(3.14159f * jumpAngle / 180.f));
+			} else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
 		}
 		if (sprite->animation() == JUMP_RIGHT){
 			posPlayer.x += 2;
@@ -550,9 +570,10 @@ void Player::update(int deltaTime)
 			if (jumpAngle == 180){
 				posPlayer.y = startY;
 				bJumping = false;
+				//aux = false;
 				sprite->changeAnimation(MOVE_RIGHT);
 			}
-			else posPlayer.y = int(startY - 5 * sin(3.14159f * jumpAngle / 180.f));
+			else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
 		}
 		if (sprite->animation() == START_JUMP_LEFT){
 			if (sprite->timetoChange(START_JUMP_LEFT)){
