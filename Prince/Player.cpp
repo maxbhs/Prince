@@ -25,7 +25,6 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
 	bJumping = false;
 	bDown = false;
-	//aux = false;
 	canClimb = false;
 	downPressed = false;
 	upPressed = false;
@@ -216,11 +215,6 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 		}
 		
 		
-	
-		
-		
-
-		
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
@@ -292,11 +286,20 @@ void Player::update(int deltaTime)
 				}
 				upPressed = false;
 			}
+			/*if (Game::instance().getSpecialKey(GLUT_KEY_DOWN) && !downPressed){
+				downPressed = true;
+			}
+			if (!Game::instance().getSpecialKey(GLUT_KEY_DOWN) && downPressed){
+				if (sprite->animation() != START_JUMP_LEFT){
+					bDown = true;
+					sprite->changeAnimation(START_JUMP_LEFT);
+				}
+				downPressed = false;
+			}*/
 		}
 		else{
 			if (sprite->animation() != MOVE_DOWN_LEFT)
 				sprite->changeAnimation(MOVE_DOWN_LEFT);
-
 		}
 		if (sprite->animation() == START_MOVE_LEFT || sprite->animation() == MOVE_LEFT || sprite->animation() == START_JUMP_LEFT){
 			posPlayer.x -= 2;
@@ -379,6 +382,16 @@ void Player::update(int deltaTime)
 				}
 				upPressed = false;
 			}
+			/*if (Game::instance().getSpecialKey(GLUT_KEY_DOWN) && !downPressed){
+				downPressed = true;
+			}
+			if (!Game::instance().getSpecialKey(GLUT_KEY_DOWN) && downPressed){
+				if (sprite->animation() != START_JUMP_LEFT){
+					bDown = true;
+					sprite->changeAnimation(START_JUMP_LEFT);
+				}
+				downPressed = false;
+			}*/
 		}
 		else{
 			if (sprite->animation() != MOVE_DOWN_RIGHT)
@@ -421,9 +434,6 @@ void Player::update(int deltaTime)
 	}
 	else if (Game::instance().getSpecialKey(GLUT_KEY_UP) && !upPressed){
 		upPressed = true;
-		/*if (Game::instance().getSpecialKey(GLUT_KEY_LEFT) || Game::instance().getSpecialKey(GLUT_KEY_RIGHT)){
-			aux = true;
-		}*/
 	}
 	else if (!Game::instance().getSpecialKey(GLUT_KEY_UP) && upPressed){
 		if (bDown){
@@ -435,16 +445,14 @@ void Player::update(int deltaTime)
 			}
 		}
 		else{
-			//if (!aux){
-				if (sprite->animation() == STAND_LEFT){
-					bJumping = true;
-					sprite->changeAnimation(START_JUMP_LEFT_UP);
-				}
-				else if (sprite->animation() == STAND_RIGHT){
-					bJumping = true;
-					sprite->changeAnimation(START_JUMP_RIGHT_UP);
-				}
-			//}
+			if (sprite->animation() == STAND_LEFT){
+				bJumping = true;
+				sprite->changeAnimation(START_JUMP_LEFT_UP);
+			}
+			else if (sprite->animation() == STAND_RIGHT){
+				bJumping = true;
+				sprite->changeAnimation(START_JUMP_RIGHT_UP);
+			}
 			else {
 				if (sprite->animation() == STAND_LEFT || sprite->animation() == START_WALK_LEFT || sprite->animation() == MOVE_LEFT || sprite->animation() == STOP_MOVE_LEFT){
 					bJumping = true;
