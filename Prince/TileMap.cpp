@@ -106,7 +106,7 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 	vector<float> vertices;
 	
 	halfTexel = glm::vec2(0.5f / tilesheet.width(), 0.5f / tilesheet.height());
-	for(int j=0; j<mapSize.y; j++)
+	for (int j = mapSize.y-1; j>=0; j--)
 	{
 		for(int i=0; i<mapSize.x; i++)
 		{
