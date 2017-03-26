@@ -1,34 +1,9 @@
 TILEMAP
-36 28 							-- Size of tile map in tiles
+10 3 							-- Size of tile map in tiles
 32 64 							-- Tile size & block size
-tails/locura.png 	-- Tilesheet
-2 2 								-- Number of tiles in tilesheet
-111111111111111111111111111111111111
-11                                11
-11234                             11
-11423333                          11
-11                                11
-11                                11
-11                                11
-1111   11111   1   1   111111   1111
-11           1 1 1 1 1            11
-11                                11
-11                                11
-11                                11
-1111   1111   22   22   11111   1111
-11                                11
-11                                11
-11              111               11
-11                                11
-1111   111  11       11  2111   1111
-11            11   11             11
-11             11111              11
-11                                11
-11                                11
-1111   1111111111111111111111   1111
-11                                11
-11                                11
-11                                11
-11                                11
-111111111111111111111111111111111111
+tails/xxx.png 	-- Tilesheet
+8 8 								-- Number of tiles in tilesheet
+TR2B6789XT
+TRRPR224XT
+TC23BD14XT
 
