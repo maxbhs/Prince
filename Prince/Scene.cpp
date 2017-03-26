@@ -5,11 +5,11 @@
 #include "Game.h"
 
 
-#define SCREEN_X 22
+#define SCREEN_X 32
 #define SCREEN_Y 16
 
-#define INIT_PLAYER_X_TILES 3
-#define INIT_PLAYER_Y_TILES 5
+#define INIT_PLAYER_X_TILES 4
+#define INIT_PLAYER_Y_TILES 23
 
 
 Scene::Scene()

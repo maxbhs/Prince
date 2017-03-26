@@ -111,5 +111,9 @@ bool Sprite::timetoChange(int animId){
 	else return false;
 }
 
+int Sprite::getKeyframe(int animId) const{
+	return currentKeyframe;
+}
+
 
 
