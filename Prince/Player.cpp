@@ -302,13 +302,13 @@ void Player::update(int deltaTime)
 				sprite->changeAnimation(MOVE_DOWN_LEFT);
 		}
 		if (sprite->animation() == START_MOVE_LEFT || sprite->animation() == MOVE_LEFT || sprite->animation() == START_JUMP_LEFT){
-			posPlayer.x -= 2;
+			posPlayer.x -= 1;
 		}
 		if (sprite->animation() == STOP_MOVE_LEFT || sprite->animation() == MOVE_DOWN_LEFT){
 			posPlayer.x -= 1;
 		}
 		if (sprite->animation() == WALK_LEFT && sprite->getKeyframe(WALK_LEFT) == 5){
-			posPlayer.x -= 2;
+			posPlayer.x -= 1;
 		}
 
 		/*if (map->collisionMoveLeft(posPlayer, glm::ivec2(64, 64))){
@@ -398,13 +398,13 @@ void Player::update(int deltaTime)
 				sprite->changeAnimation(MOVE_DOWN_RIGHT);
 		}
 		if (sprite->animation() == START_MOVE_RIGHT || sprite->animation() == MOVE_RIGHT || sprite->animation() == START_JUMP_RIGHT){
-			posPlayer.x += 2;
+			posPlayer.x += 1;
 		}
 		if (sprite->animation() == STOP_MOVE_RIGHT || sprite->animation() == MOVE_DOWN_RIGHT){
 			posPlayer.x += 1;
 		}
 		if (sprite->animation() == WALK_RIGHT && sprite->getKeyframe(WALK_RIGHT) == 5){
-			posPlayer.x += 2;
+			posPlayer.x += 1;
 		}
 
 		/*if (map->collisionMoveRight(posPlayer, glm::ivec2(64, 64))){
@@ -488,13 +488,13 @@ void Player::update(int deltaTime)
 		}
 
 		if(sprite->animation() == WALK_LEFT){
-			if (sprite->getKeyframe(WALK_RIGHT) == 5) posPlayer.x -= 2;
+			if (sprite->getKeyframe(WALK_RIGHT) == 5) posPlayer.x -= 1;
 			else if (sprite->timetoChange(WALK_LEFT)){
 				sprite->changeAnimation(STAND_LEFT);
 			}
 		}
 		if (sprite->animation() == WALK_RIGHT){
-			if (sprite->getKeyframe(WALK_RIGHT) == 5) posPlayer.x += 2;
+			if (sprite->getKeyframe(WALK_RIGHT) == 5) posPlayer.x += 1;
 			else if (sprite->timetoChange(WALK_RIGHT)){
 				sprite->changeAnimation(STAND_RIGHT);
 			}
@@ -589,7 +589,7 @@ void Player::update(int deltaTime)
 				startY = posPlayer.y;
 				sprite->changeAnimation(JUMP_LEFT);
 			}
-			else posPlayer.x -= 2;
+			else posPlayer.x -= 1;
 		}
 		if (sprite->animation() == START_JUMP_RIGHT){
 			if (sprite->timetoChange(START_JUMP_RIGHT)){
@@ -597,7 +597,7 @@ void Player::update(int deltaTime)
 				startY = posPlayer.y;
 				sprite->changeAnimation(JUMP_RIGHT);
 			}
-			else posPlayer.x += 2;
+			else posPlayer.x += 1;
 		}
 		if (sprite->animation() == START_JUMP_LEFT_UP){
 			if (sprite->timetoChange(START_JUMP_LEFT_UP)){
