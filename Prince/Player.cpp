@@ -15,7 +15,7 @@ enum PlayerAnims
 {
 	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, START_MOVE_LEFT, START_MOVE_RIGHT, STOP_MOVE_LEFT, STOP_MOVE_RIGHT,
 	SWITCH_TO_LEFT, SWITCH_TO_RIGHT, SWITCH_TO_LEFT_RUNNING, SWITCH_TO_RIGHT_RUNNING, START_JUMP_LEFT_UP, START_JUMP_RIGHT_UP, JUMP_LEFT_UP, JUMP_RIGHT_UP,
-	STOP_JUMP_LEFT_UP, STOP_JUMP_RIGHT_UP,START_JUMP_LEFT, START_JUMP_RIGHT, JUMP_LEFT, JUMP_RIGHT, START_JUMP_LEFT_RUN, START_JUMP_RIGHT_RUN, JUMP_LEFT_RUN, JUMP_RIGHT_RUN, CLIMB_LEFT, CLIMB_RIGHT, CLIMB_LEFT_UP, CLIMB_RIGHT_UP,
+	STOP_JUMP_LEFT_UP, STOP_JUMP_RIGHT_UP,START_JUMP_LEFT, START_JUMP_RIGHT, JUMP_LEFT, JUMP_RIGHT, STOP_JUMP_LEFT, STOP_JUMP_RIGHT, START_JUMP_LEFT_RUN, START_JUMP_RIGHT_RUN, JUMP_LEFT_RUN, JUMP_RIGHT_RUN, CLIMB_LEFT, CLIMB_RIGHT, CLIMB_LEFT_UP, CLIMB_RIGHT_UP,
 	DOWN_LEFT, DOWN_RIGHT, STAND_DOWN_LEFT, STAND_DOWN_RIGHT, MOVE_DOWN_LEFT, MOVE_DOWN_RIGHT, UP_LEFT, UP_RIGHT, WALK_LEFT, WALK_RIGHT, START_WALK_LEFT,
 	START_WALK_RIGHT
 };
@@ -32,7 +32,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	rightPressed = false;
 	spritesheet.loadFromFile("sprites/sprites-prince.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(64,64), glm::vec2(0.05f, 0.05f), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(42);
+	sprite->setNumberAnimations(44);
 
 
 		sprite->setAnimationSpeed(STAND_LEFT, 8);
@@ -144,13 +144,13 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 		}
 
 		sprite->setAnimationSpeed(JUMP_LEFT, 8);
-		for (int i = 4; i <= 8; i++){
-			sprite->addKeyframe(JUMP_LEFT, glm::vec2(0.f + (1 - (i / 20.0f)), 0.9f));
+		for (int i = 6; i <= 10; i++){
+			sprite->addKeyframe(JUMP_LEFT, glm::vec2(0.f + (1 - (i / 20.0f)), 0.1f));
 		}
 
 		sprite->setAnimationSpeed(JUMP_RIGHT, 8);
-		for (int i = 3; i < 8; i++){
-			sprite->addKeyframe(JUMP_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.9f));
+		for (int i = 5; i < 10; i++){
+			sprite->addKeyframe(JUMP_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.1f));
 		}
 
 		sprite->setAnimationSpeed(START_JUMP_LEFT_RUN, 8);
@@ -164,16 +164,24 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 		}
 
 		sprite->setAnimationSpeed(START_JUMP_LEFT, 8);
-		for (int i = 1; i <= 3; i++){
-			sprite->addKeyframe(START_JUMP_LEFT, glm::vec2(0.f + (1 - (i / 20.0f)), 0.6f));
+		for (int i = 1; i <= 5; i++){
+			sprite->addKeyframe(START_JUMP_LEFT, glm::vec2(0.f + (1 - (i / 20.0f)), 0.1f));
 		}
-		sprite->addKeyframe(START_JUMP_LEFT, glm::vec2(0.85f, 0.9f));
 
 		sprite->setAnimationSpeed(START_JUMP_RIGHT, 8);
-		for (int i = 0; i < 3; i++){
-			sprite->addKeyframe(START_JUMP_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.6f));
+		for (int i = 0; i < 5; i++){
+			sprite->addKeyframe(START_JUMP_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.1f));
 		}
-		sprite->addKeyframe(START_JUMP_RIGHT, glm::vec2(0.1f, 0.9f));
+
+		sprite->setAnimationSpeed(STOP_JUMP_LEFT, 8);
+		for (int i = 1; i <= 6; i++){
+			sprite->addKeyframe(STOP_JUMP_LEFT, glm::vec2(0.f + (1 - (i / 20.0f)), 0.15f));
+		}
+
+		sprite->setAnimationSpeed(STOP_JUMP_RIGHT, 8);
+		for (int i = 0; i < 6; i++){
+			sprite->addKeyframe(STOP_JUMP_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.15f));
+		}
 
 		sprite->setAnimationSpeed(CLIMB_LEFT, 8);
 		for (int i = 1; i <= 4; i++){
@@ -326,7 +334,7 @@ void Player::update(int deltaTime)
 			posPlayer.x -= 1;
 		}
 		if (sprite->animation() == WALK_LEFT && sprite->getKeyframe(WALK_LEFT) == 5){
-			posPlayer.x -= 1;
+			posPlayer.x -= 2;
 		}
 
 		/*if (map->collisionMoveLeft(posPlayer, glm::ivec2(64, 64))){
@@ -417,7 +425,7 @@ void Player::update(int deltaTime)
 			posPlayer.x += 1;
 		}
 		if (sprite->animation() == WALK_RIGHT && sprite->getKeyframe(WALK_RIGHT) == 5){
-			posPlayer.x += 1;
+			posPlayer.x += 2;
 		}
 
 		/*if (map->collisionMoveRight(posPlayer, glm::ivec2(64, 64))){
@@ -618,9 +626,7 @@ void Player::update(int deltaTime)
 			jumpAngle += 4;
 			if (jumpAngle == 180){
 				posPlayer.y = startY;
-				bJumping = false;
-				//aux = false;
-				sprite->changeAnimation(STAND_LEFT);
+				sprite->changeAnimation(STOP_JUMP_LEFT);
 			}
 			else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
 		}
@@ -629,9 +635,7 @@ void Player::update(int deltaTime)
 			jumpAngle += 4;
 			if (jumpAngle == 180){
 				posPlayer.y = startY;
-				bJumping = false;
-				//aux = false;
-				sprite->changeAnimation(STAND_RIGHT);
+				sprite->changeAnimation(STOP_JUMP_RIGHT);
 			}
 			else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
 		}
@@ -648,6 +652,25 @@ void Player::update(int deltaTime)
 				jumpAngle = 0;
 				startY = posPlayer.y;
 				sprite->changeAnimation(JUMP_RIGHT);
+			}
+		}
+
+		if (sprite->animation() == STOP_JUMP_LEFT){
+			if (sprite->timetoChange(STOP_JUMP_LEFT)){
+				bJumping = false;
+				sprite->changeAnimation(STAND_LEFT);
+			}
+			else if (sprite->getKeyframe(STOP_JUMP_LEFT) == 2){
+				posPlayer.x -= 1;
+			}
+		}
+		if (sprite->animation() == STOP_JUMP_RIGHT){
+			if (sprite->timetoChange(STOP_JUMP_RIGHT)){
+				bJumping = false;
+				sprite->changeAnimation(STAND_RIGHT);
+			}
+			else if (sprite->getKeyframe(STOP_JUMP_RIGHT) == 2){
+				posPlayer.x += 1;
 			}
 		}
 
@@ -674,7 +697,7 @@ void Player::update(int deltaTime)
 					sprite->changeAnimation(STOP_JUMP_LEFT_UP);
 				}
 				else{
-					posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
+					posPlayer.y = int(startY - 15 * sin(3.14159f * jumpAngle / 180.f));
 					if (canClimb && jumpAngle == 90){
 						sprite->changeAnimation(CLIMB_LEFT);
 					}
@@ -689,7 +712,7 @@ void Player::update(int deltaTime)
 					sprite->changeAnimation(STOP_JUMP_RIGHT_UP);
 				}
 				else{
-					posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
+					posPlayer.y = int(startY - 15 * sin(3.14159f * jumpAngle / 180.f));
 					if (canClimb && jumpAngle == 90){
 						sprite->changeAnimation(CLIMB_RIGHT);
 					}
@@ -709,27 +732,31 @@ void Player::update(int deltaTime)
 			}
 		}
 		if (sprite->animation() == CLIMB_LEFT){
-			posPlayer.y -= 1.5;
 			if (sprite->timetoChange(CLIMB_LEFT)){
 				sprite->changeAnimation(CLIMB_LEFT_UP);
-			}
+			}else posPlayer.y -= 2;
 		}
 		if (sprite->animation() == CLIMB_RIGHT){
-			posPlayer.y -= 1.5;
 			if (sprite->timetoChange(CLIMB_RIGHT)){
 				sprite->changeAnimation(CLIMB_RIGHT_UP);
-			}
+			}else posPlayer.y -= 2;
 		}
 		if (sprite->animation() == CLIMB_LEFT_UP){
 			if (sprite->timetoChange(CLIMB_LEFT_UP)){
 				bJumping = false;
 				sprite->changeAnimation(STAND_LEFT);
 			}
+			else if (sprite->getKeyframe(CLIMB_LEFT_UP) == 3 ){
+				posPlayer.x -= 1;
+			}
 		}
 		if (sprite->animation() == CLIMB_RIGHT_UP){
 			if (sprite->timetoChange(CLIMB_RIGHT_UP)){
 				bJumping = false;
 				sprite->changeAnimation(STAND_RIGHT);
+			}
+			else if (sprite->getKeyframe(CLIMB_RIGHT_UP) == 3 ){
+				posPlayer.x += 1;
 			}
 		}
 	}
