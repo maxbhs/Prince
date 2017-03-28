@@ -23,6 +23,7 @@ public:
 	TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program);
 	~TileMap();
 
+	void render2() const;
 	void render() const;
 	void free();
 	
