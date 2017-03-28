@@ -26,7 +26,7 @@ private:
 	bool canIClimb();
 	bool canIFall();
 
-	bool bJumping, bDown, bFalling, canClimb, downPressed, upPressed;
+	bool bJumping, bDown, bFalling, canClimb, downPressed, upPressed, left;
 	glm::ivec2 tileMapDispl, posPlayer;
 	int jumpAngle, startY;
 	char last;

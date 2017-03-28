@@ -15,14 +15,15 @@ enum PlayerAnims
 {
 	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, START_MOVE_LEFT, START_MOVE_RIGHT, STOP_MOVE_LEFT, STOP_MOVE_RIGHT,
 	SWITCH_TO_LEFT, SWITCH_TO_RIGHT, SWITCH_TO_LEFT_RUNNING, SWITCH_TO_RIGHT_RUNNING, START_JUMP_LEFT_UP, START_JUMP_RIGHT_UP, JUMP_LEFT_UP, JUMP_RIGHT_UP,
-	STOP_JUMP_LEFT_UP, STOP_JUMP_RIGHT_UP,START_JUMP_LEFT, START_JUMP_RIGHT, JUMP_LEFT, JUMP_RIGHT, STOP_JUMP_LEFT, STOP_JUMP_RIGHT, START_JUMP_LEFT_RUN, START_JUMP_RIGHT_RUN, JUMP_LEFT_RUN, JUMP_RIGHT_RUN, CLIMB_LEFT, CLIMB_RIGHT, CLIMB_LEFT_UP, CLIMB_RIGHT_UP,
+	STOP_JUMP_LEFT_UP, STOP_JUMP_RIGHT_UP, START_JUMP_LEFT, START_JUMP_RIGHT, JUMP_LEFT, JUMP_RIGHT, STOP_JUMP_LEFT, STOP_JUMP_RIGHT, START_JUMP_LEFT_RUN, START_JUMP_RIGHT_RUN, JUMP_LEFT_RUN, JUMP_RIGHT_RUN, CLIMB_LEFT, CLIMB_RIGHT, CLIMB_LEFT_UP, CLIMB_RIGHT_UP,
 	DOWN_LEFT, DOWN_RIGHT, STAND_DOWN_LEFT, STAND_DOWN_RIGHT, MOVE_DOWN_LEFT, MOVE_DOWN_RIGHT, UP_LEFT, UP_RIGHT, WALK_LEFT, WALK_RIGHT, START_WALK_LEFT,
-	START_WALK_RIGHT
+	START_WALK_RIGHT, FALL_LEFT, FALL_RIGHT, LAND_LEFT, LAND_RIGHT
 };
 
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
+	left = true;
 	bJumping = false;
 	bDown = false;
 	bFalling = false;
@@ -31,7 +32,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	upPressed = false;
 	spritesheet.loadFromFile("sprites/sprites-prince.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(64,64), glm::vec2(0.05f, 0.05f), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(44);
+	sprite->setNumberAnimations(48);
 
 
 		sprite->setAnimationSpeed(STAND_LEFT, 8);
@@ -243,6 +244,26 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 		for (int i = 0; i < 8; i++){
 			sprite->addKeyframe(WALK_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.75f));
 		}
+
+		sprite->setAnimationSpeed(FALL_LEFT, 8);
+		for (int i = 1; i <= 3; i++){
+			sprite->addKeyframe(FALL_LEFT, glm::vec2(0.f + (1 - (i / 20.0f)), 0.2f));
+		}
+
+		sprite->setAnimationSpeed(FALL_RIGHT, 8);
+		for (int i = 0; i < 3; i++){
+			sprite->addKeyframe(FALL_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.2f));
+		}
+
+		sprite->setAnimationSpeed(LAND_LEFT, 8);
+		for (int i = 1; i <= 6; i++){
+			sprite->addKeyframe(LAND_LEFT, glm::vec2(0.f + (1 - (i / 20.0f)), 0.15f));
+		}
+
+		sprite->setAnimationSpeed(LAND_RIGHT, 8);
+		for (int i = 0; i < 6; i++){
+			sprite->addKeyframe(LAND_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.15f));
+		}
 		
 		
 	sprite->changeAnimation(0);
@@ -254,8 +275,9 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 void Player::update(int deltaTime)
 {
 	sprite->update(deltaTime);
-	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT) && !bJumping)
+	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT) && !bJumping && !bFalling)
 	{
+		left = true;
 		if (!bDown){
 			if (!upPressed){
 				if (sprite->animation() == STAND_LEFT){
@@ -346,8 +368,9 @@ void Player::update(int deltaTime)
 			posPlayer.x += 2;
 		}*/
 	}
-	else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT) && !bJumping)
+	else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT) && !bJumping && !bFalling)
 	{
+		left = false;
 		if (!bDown){
 			if (!upPressed){
 				if (sprite->animation() == STAND_RIGHT){
@@ -438,10 +461,10 @@ void Player::update(int deltaTime)
 
 		}*/
 	}
-	else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN) && !downPressed){
+	else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN) && !downPressed && !bFalling){
 		downPressed = true;
 	}
-	else if (!Game::instance().getSpecialKey(GLUT_KEY_DOWN) && downPressed){
+	else if (!Game::instance().getSpecialKey(GLUT_KEY_DOWN) && downPressed && !bFalling){
 		if (sprite->animation() == STAND_LEFT || sprite->animation() == START_MOVE_LEFT || sprite->animation() == MOVE_LEFT || sprite->animation() == STOP_MOVE_LEFT || sprite->animation() == SWITCH_TO_LEFT){
 			bDown = true;
 			sprite->changeAnimation(DOWN_LEFT);
@@ -452,10 +475,10 @@ void Player::update(int deltaTime)
 		}
 		downPressed = false;
 	}
-	else if (Game::instance().getSpecialKey(GLUT_KEY_UP) && !upPressed){
+	else if (Game::instance().getSpecialKey(GLUT_KEY_UP) && !upPressed && !bFalling){
 		upPressed = true;
 	}
-	else if (!Game::instance().getSpecialKey(GLUT_KEY_UP) && upPressed){
+	else if (!Game::instance().getSpecialKey(GLUT_KEY_UP) && upPressed && !bFalling){
 		if (bDown){
 			if (sprite->animation() == DOWN_LEFT || sprite->animation() == STAND_DOWN_LEFT || sprite->animation() == MOVE_DOWN_LEFT){
 				sprite->changeAnimation(UP_LEFT);
@@ -758,9 +781,33 @@ void Player::update(int deltaTime)
 				posPlayer.x += 1;
 			}
 		}
-		if (!map->collisionMoveDown(posPlayer, glm::ivec2(64, 64),&posPlayer.y)){
+		if (sprite->animation() == LAND_LEFT){
+			if (sprite->timetoChange(LAND_LEFT)){
+				bFalling = false;
+				sprite->changeAnimation(STAND_LEFT);
+			}
+		}
+		if (sprite->animation() == LAND_RIGHT){
+			if (sprite->timetoChange(LAND_RIGHT)){
+				bFalling = false;
+				sprite->changeAnimation(STAND_RIGHT);
+			}
+		}
+	}
+	if (!bJumping){
+		if (!map->collisionMoveDown(posPlayer, glm::ivec2(16, 64), &posPlayer.y)){
+			if (left){
+				sprite->changeAnimation(FALL_LEFT);
+			}
+			else {
+				sprite->changeAnimation(FALL_RIGHT);
+			}
 			posPlayer.y += FALL_STEP;
 			bFalling = true;
+		}
+		else {
+			if (sprite->animation() == FALL_LEFT) sprite->changeAnimation(LAND_LEFT);
+			else if (sprite->animation() == FALL_RIGHT)sprite->changeAnimation(LAND_RIGHT);
 		}
 	}
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));

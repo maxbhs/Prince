@@ -210,11 +210,14 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 
 bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
 {
-	int x = pos.x / tileSize.x;
+	int x0 = pos.x / tileSize.x;
+	int x1 = (pos.x + size.x - 1) / tileSize.x;
 	int y = pos.y / tileSize.y;
-	if (map[y*mapSize.x + x] != 27){
-		if (*posY >= tileSize.y * y){
-			return true;
+	for (int x = x0; x <= x1; x++){
+		if (map[y*mapSize.x + x] != 27){
+			if (*posY >= tileSize.y * y){
+				return true;
+			}
 		}
 	}
 	return false;
