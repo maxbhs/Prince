@@ -8,8 +8,8 @@
 #define SCREEN_X -30
 #define SCREEN_Y -60
 
-#define INIT_PLAYER_X_TILES 1
-#define INIT_PLAYER_Y_TILES 2
+#define INIT_PLAYER_X_TILES 2
+#define INIT_PLAYER_Y_TILES 3
 
 
 Scene::Scene()
@@ -60,7 +60,7 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
 	map->render();
-	map2->render2();
+	//map2->render2();
 	player->render();
 	
 	
