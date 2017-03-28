@@ -1,12 +1,13 @@
 TILEMAP
 11 4 							-- Size of tile map in tiles
-32 64 							-- Tile size & block size
+32 63 							-- Tile size
+64 64                                                   -- Block size
 tails/xxx.png 	-- Tilesheet
 8 8			-- Number of tiles in tilesheet
 11111111111
-1112B6789XT
+1R12B6789XT
 12222RR222T
-HRRRRRRRRRT
+H222222222T
 
 
 

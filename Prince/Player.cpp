@@ -25,11 +25,10 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
 	bJumping = false;
 	bDown = false;
-	canClimb = false;
+	bFalling = false;
+	canClimb = true;
 	downPressed = false;
 	upPressed = false;
-	leftPressed = false;
-	rightPressed = false;
 	spritesheet.loadFromFile("sprites/sprites-prince.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(64,64), glm::vec2(0.05f, 0.05f), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(44);
@@ -759,25 +758,11 @@ void Player::update(int deltaTime)
 				posPlayer.x += 1;
 			}
 		}
+		if (!map->collisionMoveDown(posPlayer, glm::ivec2(64, 64),&posPlayer.y)){
+			posPlayer.y += FALL_STEP;
+			bFalling = true;
+		}
 	}
-	/*
-	{
-		posPlayer.y += FALL_STEP;
-		if(map->collisionMoveDown(posPlayer, glm::ivec2(32, 64), &posPlayer.y))
-		{
-			if (sprite->animation() != last) sprite->changeAnimation(last);
-			if(Game::instance().getSpecialKey(GLUT_KEY_UP))
-			{
-				bJumping = true;
-				jumpAngle = 0;
-				startY = posPlayer.y;
-				sprite->changeAnimation(JUMP_FALL);
-			}
-		}
-		else{
-			if (sprite->animation() != JUMP_FALL) sprite->changeAnimation(JUMP_FALL);
-		}
-	}*/
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
@@ -796,6 +781,7 @@ void Player::setPosition(const glm::vec2 &pos)
 	posPlayer = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
+
 
 
 

@@ -63,7 +63,10 @@ bool TileMap::loadLevel(const string &levelFile)
 	sstream >> mapSize.x >> mapSize.y;
 	getline(fin, line);
 	sstream.str(line);
-	sstream >> tileSize >> blockSize;
+	sstream >> tileSize.x >> tileSize.y;
+	getline(fin, line);
+	sstream.str(line);
+	sstream >> blockSize.x >> blockSize.y;
 	getline(fin, line);
 	sstream.str(line);
 	sstream >> tilesheetFile;
@@ -115,7 +118,7 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 			{
 				// Non-empty tile
 				nTiles++;
-				posTile = glm::vec2(minCoords.x + i * tileSize, (minCoords.y + j * 63)-1);
+				posTile = glm::vec2(minCoords.x + i * tileSize.x, (minCoords.y + j * tileSize.y)-1);
 				texCoordTile[0] = glm::vec2(float((tile-1)%8) / tilesheetSize.x, float((tile-1)/8) / tilesheetSize.y);
 				texCoordTile[1] = texCoordTile[0] + tileTexSize;
 				//texCoordTile[0] += halfTexel;
@@ -123,16 +126,16 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 				// First triangle
 				vertices.push_back(posTile.x); vertices.push_back(posTile.y);
 				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
-				vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y);
+				vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y);
 				vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[0].y);
-				vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y + blockSize);
+				vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y + blockSize.y);
 				vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
 				// Second triangle
 				vertices.push_back(posTile.x); vertices.push_back(posTile.y);
 				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
-				vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y + blockSize);
+				vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y + blockSize.y);
 				vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
-				vertices.push_back(posTile.x); vertices.push_back(posTile.y + blockSize);
+				vertices.push_back(posTile.x); vertices.push_back(posTile.y + blockSize.y);
 				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[1].y);
 			}
 		}
@@ -155,9 +158,9 @@ bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) c
 {
 	int x, y0, y1;
 	
-	x = pos.x / tileSize;
-	y0 = pos.y / 63;
-	y1 = (pos.y + size.y - 1) / 63;
+	x = pos.x / tileSize.x;
+	y0 = pos.y / tileSize.y;
+	y1 = (pos.y + size.y - 1) / tileSize.y;
 	for(int y=y0; y<=y1; y++)
 	{
 		if(map[y*mapSize.x+x] != 0)
@@ -171,9 +174,9 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 {
 	int x, y0, y1;
 	
-	x = (pos.x + size.x - 1) / tileSize;
-	y0 = pos.y / 63;
-	y1 = (pos.y + size.y - 1) / 63;
+	x = (pos.x + size.x - 1) / tileSize.x;
+	y0 = pos.y / tileSize.y;
+	y1 = (pos.y + size.y - 1) / tileSize.y;
 	for(int y=y0; y<=y1; y++)
 	{
 		if(map[y*mapSize.x+x] != 0)
@@ -183,25 +186,37 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 	return false;
 }
 
-bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
+/*bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
 {
 	int x0, x1, y;
 	
-	x0 = pos.x / tileSize;
-	x1 = (pos.x + size.x - 1) / tileSize;
-	y = (pos.y + size.y - 1) / 63;
+	x0 = pos.x / tileSize.x;
+	x1 = (pos.x + size.x - 1) / tileSize.x;
+	y = (pos.y + size.y - 1) / tileSize.y;
 	for(int x=x0; x<=x1; x++)
 	{
-		if(map[y*mapSize.x+x] != 0)
+		if(map[y*mapSize.x+x] != 27)
 		{
-			if(*posY - 63 * y + size.y <= 4)
+			if (*posY - tileSize.y * y + size.y <= 4)
 			{
-				*posY = 63 * y - size.y;
+				*posY = tileSize.y * y - size.y;
 				return true;
 			}
 		}
 	}
 	
+	return false;
+}*/
+
+bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
+{
+	int x = pos.x / tileSize.x;
+	int y = pos.y / tileSize.y;
+	if (map[y*mapSize.x + x] != 27){
+		if (*posY >= tileSize.y * y){
+			return true;
+		}
+	}
 	return false;
 }
 
