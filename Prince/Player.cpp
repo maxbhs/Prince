@@ -346,7 +346,7 @@ void Player::update(int deltaTime)
 			posPlayer.x += 2;
 		}*/
 	}
-	else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT) && !bJumping)
+	else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT) && !bJumping && !bFalling)
 	{
 		if (!bDown){
 			if (!upPressed){
@@ -758,11 +758,13 @@ void Player::update(int deltaTime)
 				posPlayer.x += 1;
 			}
 		}
-		if (!map->collisionMoveDown(posPlayer, glm::ivec2(64, 64),&posPlayer.y)){
-			posPlayer.y += FALL_STEP;
-			bFalling = true;
-		}
+		
 	}
+	if (!map->collisionMoveDown(posPlayer, glm::ivec2(64, 64), &posPlayer.y)){
+		posPlayer.y += FALL_STEP;
+		bFalling = true;
+	}
+	else bFalling = false;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 

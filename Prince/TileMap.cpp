@@ -31,34 +31,6 @@ TileMap::~TileMap()
 
 void TileMap::render() const
 {
-	/*glm::vec2 posTile, texCoordTile[2];
-	vector<float> vertices;
-	posTile = glm::vec2(-32 + 3 * tileSize, (-60 + 3 * 63) - 1);
-	texCoordTile[0] = glm::vec2(float((12 - 1) % 8) / tilesheetSize.x, float((12 - 1) / 8) / tilesheetSize.y);
-	texCoordTile[1] = texCoordTile[0] + tileTexSize;
-	//texCoordTile[0] += halfTexel;
-	//texCoordTile[1] -= halfTexel;
-	// First triangle
-	vertices.push_back(posTile.x); vertices.push_back(posTile.y);
-	vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
-	vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y);
-	vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[0].y);
-	vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y + blockSize);
-	vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
-	// Second triangle
-	vertices.push_back(posTile.x); vertices.push_back(posTile.y);
-	vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
-	vertices.push_back(posTile.x + blockSize); vertices.push_back(posTile.y + blockSize);
-	vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
-	vertices.push_back(posTile.x); vertices.push_back(posTile.y + blockSize);
-	vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[1].y);
-	//glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-	//glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, 24 * 40 * sizeof(float), &vertices[0], GL_STATIC_DRAW);
-	//posLocation = program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
-	//texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));*/
 
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();
@@ -69,12 +41,12 @@ void TileMap::render() const
 	glDisable(GL_TEXTURE_2D);
 }
 
-void TileMap::render2() const
+void TileMap::render2() 
 {
 	glm::vec2 posTile, texCoordTile[2];
 	vector<float> vertices;
-	posTile = glm::vec2(-32 + 3 * tileSize.x, (-60 + 3 * tileSize.y) - 1);
-	texCoordTile[0] = glm::vec2(float((12 - 1) % 8) / tilesheetSize.x, float((12 - 1) / 8) / tilesheetSize.y);
+	posTile = glm::vec2(-32 + 1 * tileSize.x, (-60 + 1 * tileSize.y) - 1);
+	texCoordTile[0] = glm::vec2(float((28 - 1) % 8) / tilesheetSize.x, float((28 - 1) / 8) / tilesheetSize.y);
 	texCoordTile[1] = texCoordTile[0] + tileTexSize;
 	//texCoordTile[0] += halfTexel;
 	//texCoordTile[1] -= halfTexel;
@@ -92,9 +64,9 @@ void TileMap::render2() const
 	vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
 	vertices.push_back(posTile.x); vertices.push_back(posTile.y + blockSize.x);
 	vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[1].y);
-	//glGenVertexArrays(1, &vao);
+	//glGenVertexArrays(1, &vao2);
 	glBindVertexArray(vao);
-	//glGenBuffers(1, &vbo);
+	//(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, 24 * 1 * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 	//posLocation = program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
@@ -106,7 +78,7 @@ void TileMap::render2() const
 	glEnableVertexAttribArray(posLocation);
 	glEnableVertexAttribArray(texCoordLocation);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glDisable(GL_TEXTURE_2D);
+	//glDisable(GL_TEXTURE_2D);
 }
 
 void TileMap::free()

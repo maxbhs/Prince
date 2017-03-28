@@ -23,7 +23,7 @@ public:
 	TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program);
 	~TileMap();
 
-	void render2() const;
+	void render2();
 	void render() const;
 	void free();
 	
@@ -38,7 +38,7 @@ private:
 	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
 
 private:
-	GLuint vao;
+	GLuint vao, vao2;
 	GLuint vbo;
 	GLint posLocation, texCoordLocation;
 	glm::ivec2 position, mapSize, tilesheetSize;
