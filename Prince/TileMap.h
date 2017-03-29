@@ -36,7 +36,7 @@ public:
 private:
 	bool loadLevel(const string &levelFile);
 	void prepareArrays(ShaderProgram &program);
-	void prepareTile(ShaderProgram &program, glm::ivec2 posPlayer);
+	void prepareTile(ShaderProgram &program);
 
 private:
 	GLuint vao, vao2;
@@ -48,6 +48,7 @@ private:
 	ShaderProgram shaderProgram;
 	glm::vec2 tileTexSize, minCoord;
 	int *map;
+	int ntilesFront;
 
 };
 

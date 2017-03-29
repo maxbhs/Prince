@@ -5,9 +5,9 @@ TILEMAP
 tails/xxx.png 	-- Tilesheet
 8 8			-- Number of tiles in tilesheet
 XXXXXXXXXXX
-T4141B2RRTX
-T434RKR24TX
-T2444T44CTX
+T4141B2RRXT
+T434RKR24XT
+T2444T44CXT
 
 
 
