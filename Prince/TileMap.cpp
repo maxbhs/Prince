@@ -33,8 +33,9 @@ TileMap::~TileMap()
 }
 
 
-void TileMap::render_back() const
+void TileMap::render_back(ShaderProgram &texProgram)
 {
+	prepareArrays(texProgram);
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();
 	glBindVertexArray(vao);
@@ -44,8 +45,14 @@ void TileMap::render_back() const
 	glDisable(GL_TEXTURE_2D);
 }
 
-void TileMap::render_front(glm::ivec2 posPlayer){
+void TileMap::render_front(glm::ivec2 posPlayer, ShaderProgram &texProgram){
+
+	prepareTile(texProgram,posPlayer);
 	
+	glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0.f));
+	texProgram.setUniformMatrix4f("modelview", modelview);
+	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
+
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();
 	glBindVertexArray(vao);
@@ -164,14 +171,14 @@ void TileMap::prepareArrays(ShaderProgram &program)
 	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4*sizeof(float), (void *)(2*sizeof(float)));
 }
 
-/*void TileMap::prepareTile(ShaderProgram *program, glm::ivec2 posPlayer){
+void TileMap::prepareTile(ShaderProgram &program, glm::ivec2 posPlayer){
 	
 	
 	glm::vec2 posTile, texCoordTile[2];
 	vector<float> vertices;
 
-	posTile = glm::vec2(minCoord.x +  2* tileSize.x, (minCoord.y + 2* tileSize.y) - 1);
-	int tile = 1;
+	posTile = glm::vec2(minCoord.x +  3* tileSize.x, (minCoord.y + 2* tileSize.y) - 1);
+	int tile = 28;
 	texCoordTile[0] = glm::vec2(float((tile - 1) % 8) / tilesheetSize.x, float((tile - 1) / 8) / tilesheetSize.y);
 	texCoordTile[1] = texCoordTile[0] + tileTexSize;
 
@@ -190,14 +197,14 @@ void TileMap::prepareArrays(ShaderProgram &program)
 	vertices.push_back(posTile.x); vertices.push_back(posTile.y + blockSize.y);
 	vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[1].y);
 
-	glGenVertexArrays(1, &vao2);
-	glBindVertexArray(vao2);
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), &vertices[0], GL_STATIC_DRAW);
-	posLocation2 = program->bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
-	texCoordLocation2 = program->bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
-}*/
+	posLocation = program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
+	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
+}
 
 
 

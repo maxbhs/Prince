@@ -59,18 +59,13 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
-	map->render_back();
+	map->render_back(texProgram);
 	player->render();
-	//Si haces las transformaciones aqui va bien. En eñ tramslate de aqui tendriamos 
-	//que poner el tile que queramos en la posicion del jugador.
-	//De momento pinta el tile X abajo de todo no se porque.
+	//Pinta solo la columna usando prepareTile y todo el rollo. Habria que ir cambiando el
+	//tile que se prepara en prepareTile por el que esta en la posicion del player.
 	
 	glm::ivec2 p = player->getPosition();
-	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(128.f,0.f,0.f));
-	texProgram.setUniformMatrix4f("modelview", modelview);
-	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
-
-	map->render_front(p);
+	map->render_front(p,texProgram);
 	
 
 	
