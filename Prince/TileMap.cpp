@@ -22,6 +22,7 @@ TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProg
 	shaderProgram = program;
 	minCoord = minCoords;
 	prepareArrays(program);
+	prepareTile(program); //cambiado
 
 }
 
@@ -45,7 +46,7 @@ void TileMap::render_back(ShaderProgram &texProgram)
 
 void TileMap::render_front(glm::ivec2 posPlayer, ShaderProgram &texProgram){
 
-	prepareTile(texProgram,posPlayer);
+	
 	
 	glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0.f));
 	texProgram.setUniformMatrix4f("modelview", modelview);
@@ -56,7 +57,7 @@ void TileMap::render_front(glm::ivec2 posPlayer, ShaderProgram &texProgram){
 	glBindVertexArray(vao2);
 	glEnableVertexAttribArray(posLocation);
 	glEnableVertexAttribArray(texCoordLocation);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDrawArrays(GL_TRIANGLES, 0, 6 * ntilesFront); //cambiado
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -168,22 +169,23 @@ void TileMap::prepareArrays(ShaderProgram &program)
 	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4*sizeof(float), (void *)(2*sizeof(float)));
 }
 
-void TileMap::prepareTile(ShaderProgram &program, glm::ivec2 posPlayer){
+void TileMap::prepareTile(ShaderProgram &program){
 
 
 	glm::vec2 posTile, texCoordTile[2];
 	vector<float> vertices;
-	int x = (posPlayer.x+tileSize.x/2) / tileSize.x;
-	int y = (posPlayer.y+tileSize.y/2) / tileSize.y;
-	int tile = map[(y)*tileSize.x + x];
-	tile = 28;
+	//int x = (posPlayer.x+tileSize.x/2) / tileSize.x;
+	//int y = (posPlayer.y+tileSize.y/2) / tileSize.y;
+	//int tile = map[(y)*tileSize.x + x];
+	int ntiles = 1; //poner a 0 una vez programado el bucle!!
+	int tile = 33;
 
 	//vector<int> tiles = { 3, 17, 25, 29, 30, 31, 33 };
 
 	//for (int i = 0; i < tiles.size(); i++){
 		//if (tile == tiles[i]){
 			//if (tile == 3 ||tile == 17 || tile == 25) tile = 28;
-			posTile = glm::vec2(minCoord.x + (2)* tileSize.x, (minCoord.y + 2* tileSize.y)-1);
+			posTile = glm::vec2(minCoord.x + (9)* tileSize.x, (minCoord.y + 2* tileSize.y)-1);
 			texCoordTile[0] = glm::vec2(float((tile - 1) % 8) / tilesheetSize.x, float((tile - 1) / 8) / tilesheetSize.y);
 			texCoordTile[1] = texCoordTile[0] + tileTexSize;
 
@@ -205,11 +207,12 @@ void TileMap::prepareTile(ShaderProgram &program, glm::ivec2 posPlayer){
 			glBindVertexArray(vao2);
 			glGenBuffers(1, &vbo);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, 24 * ntiles * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 			posLocation = program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
 			texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
 		//}
 	//}
+			ntilesFront = ntiles; //cambiado
 }
 
 
