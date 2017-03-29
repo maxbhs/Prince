@@ -796,7 +796,7 @@ void Player::update(int deltaTime)
 		}
 	}
 	if (!bJumping){
-		if (!map->collisionMoveDown(posPlayer, glm::ivec2(64, 64))){
+		if (!map->collisionMoveDown(posPlayer, glm::ivec2(15, 40))){
 			if (left){
 				sprite->changeAnimation(FALL_LEFT);
 			}

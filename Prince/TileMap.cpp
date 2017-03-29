@@ -127,7 +127,6 @@ void TileMap::prepareArrays(ShaderProgram &program)
 	int tile, nTiles = 0;
 	glm::vec2 posTile, texCoordTile[2];
 	vector<float> vertices;
-	vector<float> vertices2;
 	
 	for (int j = mapSize.y-1; j>=0; j--)
 	{
@@ -266,19 +265,21 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 
 bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
-	int px = pos.x;
+	int x0, x1, y;
+
 	int py = pos.y;
-	
-	int x0 = px / tileSize.x;
-	int x1 = (px + size.x -1 ) / tileSize.x;
-	int y = py / tileSize.y;
+
+	x0 = pos.x / tileSize.x;
+	x1 = (pos.x + size.x - 1) / tileSize.x;
+	y = (pos.y + size.y - 1) / tileSize.y;
 	for (int x = x0; x <= x1; x++){
-		if (map[y*mapSize.x + x] != 27){
-			if (py >= tileSize.y * y){
+		if (map[(y)*mapSize.x + x] != 27){
+			if (py - tileSize.y * y + size.y <= 4){
 				return true;
 			}
 		}
 	}
+
 	return false;
 }
 
