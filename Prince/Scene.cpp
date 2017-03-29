@@ -8,8 +8,8 @@
 #define SCREEN_X -30
 #define SCREEN_Y -60
 
-#define INIT_PLAYER_X_TILES 1
-#define INIT_PLAYER_Y_TILES 1
+#define INIT_PLAYER_X_TILES 3
+#define INIT_PLAYER_Y_TILES 2
 
 
 Scene::Scene()
@@ -31,10 +31,9 @@ void Scene::init()
 {
 	initShaders();
 	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	map2 = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize().x, (INIT_PLAYER_Y_TILES * map->getTileSize().y)+5));
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize().x, (INIT_PLAYER_Y_TILES * map->getTileSize().y)));
 	player->setTileMap(map);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
@@ -61,8 +60,6 @@ void Scene::render()
 
 	map->render_back(texProgram);
 	player->render();
-	//Pinta solo la columna usando prepareTile y todo el rollo. Habria que ir cambiando el
-	//tile que se prepara en prepareTile por el que esta en la posicion del player.
 	
 	glm::ivec2 p = player->getPosition();
 	map->render_front(p,texProgram);

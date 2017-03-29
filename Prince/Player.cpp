@@ -358,7 +358,7 @@ void Player::update(int deltaTime)
 			posPlayer.x -= 2;
 		}
 
-		if (map->collisionMoveLeft(posPlayer, glm::ivec2(15, 50))){
+		/*if (map->collisionMoveLeft(posPlayer, glm::ivec2(64, 64))){
 			if (sprite->animation() == MOVE_LEFT){
 				sprite->changeAnimation(STOP_MOVE_LEFT);
 			}
@@ -366,7 +366,7 @@ void Player::update(int deltaTime)
 				sprite->changeAnimation(STAND_LEFT);
 			}
 			posPlayer.x += 1;
-		}
+		}*/
 	}
 	else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT) && !bJumping && !bFalling)
 	{
@@ -450,7 +450,7 @@ void Player::update(int deltaTime)
 			posPlayer.x += 2;
 		}
 
-		if (map->collisionMoveRight(posPlayer, glm::ivec2(15, 50))){
+		/*if (map->collisionMoveRight(posPlayer, glm::ivec2(64, 64))){
 			if (sprite->animation() == MOVE_RIGHT){
 				sprite->changeAnimation(STOP_MOVE_RIGHT);
 			}
@@ -458,8 +458,7 @@ void Player::update(int deltaTime)
 				sprite->changeAnimation(STAND_RIGHT);
 			}
 			posPlayer.x -= 1;
-
-		}
+		}*/
 	}
 	else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN) && !downPressed && !bFalling){
 		downPressed = true;
@@ -797,7 +796,7 @@ void Player::update(int deltaTime)
 		}
 	}
 	if (!bJumping){
-		if (!map->collisionMoveDown(posPlayer, glm::ivec2(15, 50))){
+		if (!map->collisionMoveDown(posPlayer, glm::ivec2(64, 64))){
 			if (left){
 				sprite->changeAnimation(FALL_LEFT);
 			}

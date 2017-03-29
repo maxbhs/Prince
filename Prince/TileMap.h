@@ -39,7 +39,7 @@ private:
 	void prepareTile(ShaderProgram &program, glm::ivec2 posPlayer);
 
 private:
-	GLuint vao;
+	GLuint vao, vao2;
 	GLuint vbo;
 	GLint posLocation, texCoordLocation;
 	glm::ivec2 position, mapSize, tilesheetSize;
