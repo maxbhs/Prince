@@ -23,28 +23,30 @@ public:
 	TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program);
 	~TileMap();
 
-	void render2();
 	void render() const;
+	void render2(glm::ivec2 posPlayer);
 	void free();
 	
 	glm::ivec2 getTileSize() const { return tileSize; }
 
 	bool collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const;
-	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const;
+	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	
 private:
 	bool loadLevel(const string &levelFile);
-	void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
+	void prepareArrays(ShaderProgram &program);
+	void prepareTile(ShaderProgram *program, glm::ivec2 posPlayer);
 
 private:
-	GLuint vao, vao2;
+	GLuint vao;
 	GLuint vbo;
 	GLint posLocation, texCoordLocation;
 	glm::ivec2 position, mapSize, tilesheetSize;
 	glm::ivec2 tileSize, blockSize;
 	Texture tilesheet;
-	glm::vec2 tileTexSize;
+	ShaderProgram shaderProgram;
+	glm::vec2 tileTexSize, minCoord;
 	int *map;
 
 };

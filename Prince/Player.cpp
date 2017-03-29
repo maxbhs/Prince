@@ -358,7 +358,7 @@ void Player::update(int deltaTime)
 			posPlayer.x -= 2;
 		}
 
-		if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 64))){
+		if (map->collisionMoveLeft(posPlayer, glm::ivec2(15, 50))){
 			if (sprite->animation() == MOVE_LEFT){
 				sprite->changeAnimation(STOP_MOVE_LEFT);
 			}
@@ -450,7 +450,7 @@ void Player::update(int deltaTime)
 			posPlayer.x += 2;
 		}
 
-		if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 64))){
+		if (map->collisionMoveRight(posPlayer, glm::ivec2(15, 50))){
 			if (sprite->animation() == MOVE_RIGHT){
 				sprite->changeAnimation(STOP_MOVE_RIGHT);
 			}
@@ -797,7 +797,7 @@ void Player::update(int deltaTime)
 		}
 	}
 	if (!bJumping){
-		if (!map->collisionMoveDown(posPlayer, glm::ivec2(32, 64), &posPlayer.y)){
+		if (!map->collisionMoveDown(posPlayer, glm::ivec2(15, 50))){
 			if (left){
 				sprite->changeAnimation(FALL_LEFT);
 			}
@@ -830,6 +830,12 @@ void Player::setPosition(const glm::vec2 &pos)
 	posPlayer = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
+
+glm::ivec2 Player::getPosition()
+{
+	return posPlayer;
+}
+
 
 
 

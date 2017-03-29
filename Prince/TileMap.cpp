@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include "TileMap.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 //nou
 using namespace std;
@@ -19,7 +20,10 @@ TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoo
 TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program)
 {
 	loadLevel(levelFile);
-	prepareArrays(minCoords, program);
+	shaderProgram = program;
+	minCoord = minCoords;
+	prepareArrays(program);
+
 }
 
 TileMap::~TileMap()
@@ -31,7 +35,6 @@ TileMap::~TileMap()
 
 void TileMap::render() const
 {
-
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();
 	glBindVertexArray(vao);
@@ -41,37 +44,12 @@ void TileMap::render() const
 	glDisable(GL_TEXTURE_2D);
 }
 
-void TileMap::render2()
-{
-	glm::vec2 posTile, texCoordTile[2];
-	vector<float> vertices;
-	posTile = glm::vec2(-32 + 1 * tileSize.x, (-60 + 1 * tileSize.y) - 1);
-	texCoordTile[0] = glm::vec2(float((12 - 1) % 8) / tilesheetSize.x, float((12 - 1) / 8) / tilesheetSize.y);
-	texCoordTile[1] = texCoordTile[0] + tileTexSize;
-	//texCoordTile[0] += halfTexel;
-	//texCoordTile[1] -= halfTexel;
-	// First triangle
-	vertices.push_back(posTile.x); vertices.push_back(posTile.y);
-	vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
-	vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y);
-	vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[0].y);
-	vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y + blockSize.x);
-	vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
-	// Second triangle
-	vertices.push_back(posTile.x); vertices.push_back(posTile.y);
-	vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
-	vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y + blockSize.x);
-	vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
-	vertices.push_back(posTile.x); vertices.push_back(posTile.y + blockSize.x);
-	vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[1].y);
-	//glGenVertexArrays(1, &vao2);
-	glBindVertexArray(vao);
-	//glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, 24 * 1 * sizeof(float), &vertices[0], GL_STATIC_DRAW);
-	//posLocation = program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
-	//texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
-
+void TileMap::render2(glm::ivec2 posPlayer){
+	//prepareTile(&shaderProgram, posPlayer);
+	//glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0.f));
+	//shaderProgram.setUniformMatrix4f("modelview", modelview);
+	///shaderProgram.setUniform2f("texCoordDispl", minCoord.x, minCoord.y);
+	
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();
 	glBindVertexArray(vao);
@@ -143,13 +121,13 @@ bool TileMap::loadLevel(const string &levelFile)
 	return true;
 }
 
-void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
+void TileMap::prepareArrays(ShaderProgram &program)
 {
 	int tile, nTiles = 0;
-	glm::vec2 posTile, texCoordTile[2], halfTexel;
+	glm::vec2 posTile, texCoordTile[2];
 	vector<float> vertices;
+	vector<float> vertices2;
 	
-	halfTexel = glm::vec2(0.5f / tilesheet.width(), 0.5f / tilesheet.height());
 	for (int j = mapSize.y-1; j>=0; j--)
 	{
 		for(int i=0; i<mapSize.x; i++)
@@ -159,11 +137,10 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 			{
 				// Non-empty tile
 				nTiles++;
-				posTile = glm::vec2(minCoords.x + i * tileSize.x, (minCoords.y + j * tileSize.y)-1);
+				posTile = glm::vec2(minCoord.x + i * tileSize.x, (minCoord.y + j * tileSize.y)-1);
 				texCoordTile[0] = glm::vec2(float((tile-1)%8) / tilesheetSize.x, float((tile-1)/8) / tilesheetSize.y);
 				texCoordTile[1] = texCoordTile[0] + tileTexSize;
-				//texCoordTile[0] += halfTexel;
-				//texCoordTile[1] -= halfTexel;
+				
 				// First triangle
 				vertices.push_back(posTile.x); vertices.push_back(posTile.y);
 				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
@@ -191,6 +168,43 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4*sizeof(float), (void *)(2*sizeof(float)));
 }
 
+/*void TileMap::prepareTile(ShaderProgram *program, glm::ivec2 posPlayer){
+	
+	
+	glm::vec2 posTile, texCoordTile[2];
+	vector<float> vertices;
+
+	posTile = glm::vec2(minCoord.x +  2* tileSize.x, (minCoord.y + 2* tileSize.y) - 1);
+	int tile = 1;
+	texCoordTile[0] = glm::vec2(float((tile - 1) % 8) / tilesheetSize.x, float((tile - 1) / 8) / tilesheetSize.y);
+	texCoordTile[1] = texCoordTile[0] + tileTexSize;
+
+	// First triangle
+	vertices.push_back(posTile.x); vertices.push_back(posTile.y);
+	vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
+	vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y);
+	vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[0].y);
+	vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y + blockSize.y);
+	vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
+	// Second triangle
+	vertices.push_back(posTile.x); vertices.push_back(posTile.y);
+	vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
+	vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y + blockSize.y);
+	vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
+	vertices.push_back(posTile.x); vertices.push_back(posTile.y + blockSize.y);
+	vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[1].y);
+
+	glGenVertexArrays(1, &vao2);
+	glBindVertexArray(vao2);
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+	posLocation2 = program->bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
+	texCoordLocation2 = program->bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
+}*/
+
+
+
 // Collision tests for axis aligned bounding boxes.
 // Method collisionMoveDown also corrects Y coordinate if the box is
 // already intersecting a tile below.
@@ -198,10 +212,13 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
 	int x, y0, y1;
+	int px = pos.x + 25;
+	int py = pos.y + 9;
+
 	
-	x = pos.x / tileSize.x;
-	y0 = pos.y / tileSize.y;
-	y1 = (pos.y + size.y - 1) / tileSize.y;
+	x = px / tileSize.x;
+	y0 = py / tileSize.y;
+	y1 = (py + size.y - 1) / tileSize.y;
 	for(int y=y0; y<=y1; y++)
 	{
 		if (map[y*mapSize.x + x] == 11) return true;
@@ -218,10 +235,12 @@ bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) c
 bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
 	int x, y0, y1;
-	
-	x = (pos.x + size.x - 1) / tileSize.x;
-	y0 = pos.y / tileSize.y;
-	y1 = (pos.y + size.y - 1) / tileSize.y;
+	int px = pos.x + 25;
+	int py = pos.y + 9;
+
+	x = (px + size.x - 1) / tileSize.x;
+	y0 = py / tileSize.y;
+	y1 = (py + size.y - 1) / tileSize.y;
 	for(int y=y0; y<=y1; y++)
 	{
 		if (map[y*mapSize.x + x] == 11) return true;
@@ -257,14 +276,17 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 	return false;
 }*/
 
-bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
+bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
-	int x0 = pos.x / tileSize.x;
-	int x1 = (pos.x + size.x - 1) / tileSize.x;
-	int y = pos.y / tileSize.y;
+	int px = pos.x + 25;
+	int py = pos.y + 9;
+
+	int x0 = px / tileSize.x;
+	int x1 = (px + size.x - 1) / tileSize.x;
+	int y = py / tileSize.y;
 	for (int x = x0; x <= x1; x++){
 		if (map[y*mapSize.x + x] != 27){
-			if (*posY >= tileSize.y * y){
+			if (py >= tileSize.y * y){
 				return true;
 			}
 		}
