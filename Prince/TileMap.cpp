@@ -33,7 +33,7 @@ TileMap::~TileMap()
 }
 
 
-void TileMap::render() const
+void TileMap::render_back() const
 {
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();
@@ -44,11 +44,7 @@ void TileMap::render() const
 	glDisable(GL_TEXTURE_2D);
 }
 
-void TileMap::render2(glm::ivec2 posPlayer){
-	//prepareTile(&shaderProgram, posPlayer);
-	//glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0.f));
-	//shaderProgram.setUniformMatrix4f("modelview", modelview);
-	///shaderProgram.setUniform2f("texCoordDispl", minCoord.x, minCoord.y);
+void TileMap::render_front(glm::ivec2 posPlayer){
 	
 	glEnable(GL_TEXTURE_2D);
 	tilesheet.use();

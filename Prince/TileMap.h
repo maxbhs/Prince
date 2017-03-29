@@ -23,8 +23,8 @@ public:
 	TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program);
 	~TileMap();
 
-	void render() const;
-	void render2(glm::ivec2 posPlayer);
+	void render_back() const;
+	void render_front(glm::ivec2 posPlayer);
 	void free();
 	
 	glm::ivec2 getTileSize() const { return tileSize; }
