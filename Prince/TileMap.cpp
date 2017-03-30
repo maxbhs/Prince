@@ -178,14 +178,14 @@ void TileMap::prepareArrayFront(ShaderProgram &program){
 	//int y = (posPlayer.y+tileSize.y/2) / tileSize.y;
 	//int tile = map[(y)*tileSize.x + x];
 	int ntiles = 1; //poner a 0 una vez programado el bucle!!
-	int tile = 33;
+	int tile = 28;
 
 	//vector<int> tiles = { 3, 17, 25, 29, 30, 31, 33 };
 
-	//for (int i = 0; i < tiles.size(); i++){
+	//for (int i = 0; i < ntiles; i++){
 		//if (tile == tiles[i]){
 			//if (tile == 3 ||tile == 17 || tile == 25) tile = 28;
-			posTile = glm::vec2(minCoord.x + (9)* tileSize.x, (minCoord.y + 2* tileSize.y)-1);
+			posTile = glm::vec2(minCoord.x + (2)* tileSize.x, (minCoord.y + 2* tileSize.y)-1);
 			texCoordTile[0] = glm::vec2(float((tile - 1) % 8) / tilesheetSize.x, float((tile - 1) / 8) / tilesheetSize.y);
 			texCoordTile[1] = texCoordTile[0] + tileTexSize;
 
@@ -257,7 +257,7 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size) c
 	int y = (pos.y) / tileSize.y;
 
 	if (map[y * mapSize.x + x] != 27){
-		if (pos.y >= tileSize.y * y - 1){
+		if (pos.y >= tileSize.y * y){
 			return true;
 		}
 	}

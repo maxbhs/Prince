@@ -563,16 +563,22 @@ void Player::update(int deltaTime)
 		}
 
 		if(sprite->animation() == WALK_LEFT){
-			if (sprite->getKeyframe(WALK_RIGHT) == 5) posPlayer.x -= 2;
-			else if (sprite->timetoChange(WALK_LEFT)){
-				sprite->changeAnimation(STAND_LEFT);
+			if (!map->collisionMoveLeft(posPlayer, glm::ivec2(64, 64))){
+				if (sprite->getKeyframe(WALK_RIGHT) == 5) posPlayer.x -= 2;
+				else if (sprite->timetoChange(WALK_LEFT)){
+					sprite->changeAnimation(STAND_LEFT);
+				}
 			}
+			else posPlayer.x += 2;
 		}
 		if (sprite->animation() == WALK_RIGHT){
-			if (sprite->getKeyframe(WALK_RIGHT) == 5) posPlayer.x += 2;
-			else if (sprite->timetoChange(WALK_RIGHT)){
-				sprite->changeAnimation(STAND_RIGHT);
+			if (!map->collisionMoveRight(posPlayer, glm::ivec2(64, 64))){
+				if (sprite->getKeyframe(WALK_RIGHT) == 5) posPlayer.x += 2;
+				else if (sprite->timetoChange(WALK_RIGHT)){
+					sprite->changeAnimation(STAND_RIGHT);
+				}
 			}
+			else posPlayer.x -= 2;
 		}
 		
 		if (sprite->animation() == STOP_MOVE_LEFT){
@@ -638,25 +644,40 @@ void Player::update(int deltaTime)
 			}
 		}
 		if (sprite->animation() == JUMP_LEFT_RUN){
-			posPlayer.x -= 2;
-			jumpAngle += 4;
-			if (jumpAngle == 180){
+			if (!map->collisionMoveLeft(posPlayer, glm::ivec2(64, 64))){
+				posPlayer.x -= 2;
+				jumpAngle += 4;
+				if (jumpAngle == 180){
+					posPlayer.y = startY;
+					bJumping = false;
+					sprite->changeAnimation(MOVE_LEFT);
+				}
+				else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
+			}
+			else {
+				sprite->changeAnimation(STAND_LEFT);
+				posPlayer.x += 2;
 				posPlayer.y = startY;
 				bJumping = false;
-				//aux = false;
-				sprite->changeAnimation(MOVE_LEFT);
-			} else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
+			}
 		}
 		if (sprite->animation() == JUMP_RIGHT_RUN){
-			posPlayer.x += 2;
-			jumpAngle += 4;
-			if (jumpAngle == 180){
+			if (!map->collisionMoveRight(posPlayer, glm::ivec2(64, 64))){
+				posPlayer.x += 2;
+				jumpAngle += 4;
+				if (jumpAngle == 180){
+					posPlayer.y = startY;
+					bJumping = false;
+					sprite->changeAnimation(MOVE_RIGHT);
+				}
+				else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
+			}
+			else {
+				sprite->changeAnimation(STAND_RIGHT);
+				posPlayer.x -= 2;
 				posPlayer.y = startY;
 				bJumping = false;
-				//aux = false;
-				sprite->changeAnimation(MOVE_RIGHT);
 			}
-			else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
 		}
 		if (sprite->animation() == START_JUMP_LEFT_RUN){
 			if (sprite->timetoChange(START_JUMP_LEFT_RUN)){
@@ -676,22 +697,50 @@ void Player::update(int deltaTime)
 		}
 
 		if (sprite->animation() == JUMP_LEFT){
-			posPlayer.x -= 1;
-			jumpAngle += 4;
-			if (jumpAngle == 180){
-				posPlayer.y = startY;
-				sprite->changeAnimation(STOP_JUMP_LEFT);
+			if (!map->collisionMoveLeft(posPlayer, glm::ivec2(64, 64))){
+				posPlayer.x -= 1;
+				jumpAngle += 4;
+				if (jumpAngle == 180){
+					posPlayer.y = startY;
+					if (map->collisionMoveDown(posPlayer, glm::ivec2(64, 64))){
+						sprite->changeAnimation(STOP_JUMP_LEFT);
+					}
+					else {
+						sprite->changeAnimation(FALL_LEFT);
+						bJumping = false;
+					}
+				}
+				else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
 			}
-			else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
+			else {
+				sprite->changeAnimation(STAND_LEFT);
+				posPlayer.x += 1;
+				posPlayer.y = startY;
+				bJumping = false;
+			}
 		}
 		if (sprite->animation() == JUMP_RIGHT){
-			posPlayer.x += 1;
-			jumpAngle += 4;
-			if (jumpAngle == 180){
-				posPlayer.y = startY;
-				sprite->changeAnimation(STOP_JUMP_RIGHT);
+			if (!map->collisionMoveRight(posPlayer, glm::ivec2(64, 64))){
+				posPlayer.x += 1;
+				jumpAngle += 4;
+				if (jumpAngle == 180){
+					posPlayer.y = startY;
+					if (map->collisionMoveDown(posPlayer, glm::ivec2(64, 64))){
+						sprite->changeAnimation(STOP_JUMP_RIGHT);
+					}
+					else {
+						sprite->changeAnimation(FALL_RIGHT);
+						bJumping = false;
+					}
+				}
+				else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
 			}
-			else posPlayer.y = int(startY - 10 * sin(3.14159f * jumpAngle / 180.f));
+			else{
+				sprite->changeAnimation(STAND_RIGHT);
+				posPlayer.x -= 1;
+				posPlayer.y = startY;
+				bJumping = false;
+			}
 		}
 
 		if (sprite->animation() == START_JUMP_LEFT){
@@ -710,20 +759,32 @@ void Player::update(int deltaTime)
 		}
 
 		if (sprite->animation() == STOP_JUMP_LEFT){
-			if (sprite->timetoChange(STOP_JUMP_LEFT)){
-				bJumping = false;
-				sprite->changeAnimation(STAND_LEFT);
+			if (!map->collisionMoveLeft(posPlayer, glm::ivec2(64, 64))){
+				if (sprite->timetoChange(STOP_JUMP_LEFT)){
+					bJumping = false;
+					sprite->changeAnimation(STAND_LEFT);
+				}
+				else if (sprite->getKeyframe(STOP_JUMP_LEFT) == 2){
+					posPlayer.x -= 1;
+				}
 			}
-			else if (sprite->getKeyframe(STOP_JUMP_LEFT) == 2){
-				posPlayer.x -= 1;
+			else{
+				bJumping = false;
+				posPlayer.x += 1;
 			}
 		}
 		if (sprite->animation() == STOP_JUMP_RIGHT){
-			if (sprite->timetoChange(STOP_JUMP_RIGHT)){
-				bJumping = false;
-				sprite->changeAnimation(STAND_RIGHT);
+			if (!map->collisionMoveRight(posPlayer, glm::ivec2(64, 64))){
+				if (sprite->timetoChange(STOP_JUMP_RIGHT)){
+					bJumping = false;
+					sprite->changeAnimation(STAND_RIGHT);
+				}
+				else if (sprite->getKeyframe(STOP_JUMP_RIGHT) == 2){
+					posPlayer.x += 1;
+				}
 			}
-			else if (sprite->getKeyframe(STOP_JUMP_RIGHT) == 2){
+			else {
+				bJumping = false;
 				posPlayer.x += 1;
 			}
 		}
