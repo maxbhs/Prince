@@ -24,7 +24,7 @@ public:
 	~TileMap();
 
 	void render_back(ShaderProgram &program);
-	void render_front(glm::ivec2 posPlayer, ShaderProgram &program);
+	void render_front(ShaderProgram &program);
 	void free();
 	
 	glm::ivec2 getTileSize() const { return tileSize; }
@@ -35,8 +35,8 @@ public:
 	
 private:
 	bool loadLevel(const string &levelFile);
-	void prepareArrays(ShaderProgram &program);
-	void prepareTile(ShaderProgram &program);
+	void prepareArrayBack(ShaderProgram &program);
+	void prepareArrayFront(ShaderProgram &program);
 
 private:
 	GLuint vao, vao2;

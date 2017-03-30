@@ -62,7 +62,7 @@ void Scene::render()
 	player->render();
 	
 	glm::ivec2 p = player->getPosition();
-	map->render_front(p,texProgram);
+	map->render_front(texProgram);
 	
 
 	
