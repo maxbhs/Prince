@@ -174,45 +174,56 @@ void TileMap::prepareArrayFront(ShaderProgram &program){
 
 	glm::vec2 posTile, texCoordTile[2];
 	vector<float> vertices;
-	//int x = (posPlayer.x+tileSize.x/2) / tileSize.x;
-	//int y = (posPlayer.y+tileSize.y/2) / tileSize.y;
-	//int tile = map[(y)*tileSize.x + x];
-	int ntiles = 1; //poner a 0 una vez programado el bucle!!
-	int tile = 28;
+	
+	int ntiles = 0; //poner a 0 una vez programado el bucle!!
+	int tile;
+	bool pintar = false;
 
-	//vector<int> tiles = { 3, 17, 25, 29, 30, 31, 33 };
+	for (int j = mapSize.y - 1; j >= 0; j--) {
+		for (int i = 0; i < mapSize.x; i++) {
+			tile = map[j * mapSize.x + i];
+			if (tile == 3 || tile == 17 || tile == 25) { //tile columna
+				tile = 28;
+				pintar = true;
+			}
+			else if (tile == 11 || tile == 18 || tile == 23) { //tile porta
+				tile = 34;
+				pintar = true;
+			}
+			else if (tile >= 32 && tile <= 33) pintar = true; //arreglar el problema
+			if (pintar) {
+				pintar = false;
+				ntiles++;
 
-	//for (int i = 0; i < ntiles; i++){
-		//if (tile == tiles[i]){
-			//if (tile == 3 ||tile == 17 || tile == 25) tile = 28;
-			posTile = glm::vec2(minCoord.x + (2)* tileSize.x, (minCoord.y + 2* tileSize.y)-1);
-			texCoordTile[0] = glm::vec2(float((tile - 1) % 8) / tilesheetSize.x, float((tile - 1) / 8) / tilesheetSize.y);
-			texCoordTile[1] = texCoordTile[0] + tileTexSize;
-
-			// First triangle
-			vertices.push_back(posTile.x); vertices.push_back(posTile.y);
-			vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
-			vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y);
-			vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[0].y);
-			vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y + blockSize.y);
-			vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
-			// Second triangle
-			vertices.push_back(posTile.x); vertices.push_back(posTile.y);
-			vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
-			vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y + blockSize.y);
-			vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
-			vertices.push_back(posTile.x); vertices.push_back(posTile.y + blockSize.y);
-			vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[1].y);
-			glGenVertexArrays(1, &vao2);
-			glBindVertexArray(vao2);
-			glGenBuffers(1, &vbo);
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, 24 * ntiles * sizeof(float), &vertices[0], GL_STATIC_DRAW);
-			posLocation = program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
-			texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
-		//}
-	//}
-			ntilesFront = ntiles; //cambiado
+				posTile = glm::vec2(minCoord.x + (i)* tileSize.x, (minCoord.y + j * tileSize.y) - 1);
+				texCoordTile[0] = glm::vec2(float((tile - 1) % 8) / tilesheetSize.x, float((tile - 1) / 8) / tilesheetSize.y);
+				texCoordTile[1] = texCoordTile[0] + tileTexSize;
+				// First triangle
+				vertices.push_back(posTile.x); vertices.push_back(posTile.y);
+				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
+				vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y);
+				vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[0].y);
+				vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y + blockSize.y);
+				vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
+				// Second triangle
+				vertices.push_back(posTile.x); vertices.push_back(posTile.y);
+				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
+				vertices.push_back(posTile.x + blockSize.x); vertices.push_back(posTile.y + blockSize.y);
+				vertices.push_back(texCoordTile[1].x); vertices.push_back(texCoordTile[1].y);
+				vertices.push_back(posTile.x); vertices.push_back(posTile.y + blockSize.y);
+				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[1].y);
+				
+			}
+		}
+	}
+		glGenVertexArrays(1, &vao2);
+		glBindVertexArray(vao2);
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, 24 * ntiles * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+		posLocation = program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
+		texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
+		ntilesFront = ntiles; //cambiado
 }
 
 
