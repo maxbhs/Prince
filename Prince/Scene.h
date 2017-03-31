@@ -20,7 +20,7 @@ public:
 	~Scene();
 
 	void init();
-	void init2();
+	void init2(int mov);
 	void update(int deltaTime);
 	void render();
 
@@ -33,7 +33,7 @@ private:
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
-
+	glm::vec2 posM;
 };
 
 
