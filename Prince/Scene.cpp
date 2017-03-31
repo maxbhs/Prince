@@ -61,13 +61,14 @@ void Scene::init2(int mov)  //mov=1 dreta, mov=2 esquerra, mov=3 abaix, mov=4 ad
 
 void Scene::update(int deltaTime)
 {
-	glm::ivec2 p = player->getPosition();
+	
 	currentTime += deltaTime;
 	player->update(deltaTime);
+	glm::ivec2 p = player->getPosition();
 	if (p.x > 294) init2(1);           //esto esta hecho a ojo -.-
 	else if (p.x < -30) init2(2);
 	else if (p.y > 160) init2(3);
-	else if (p.y < -55) init2(4);
+	else if (p.y < -52) init2(4);
 	
 }
 

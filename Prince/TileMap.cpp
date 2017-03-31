@@ -188,8 +188,8 @@ bool TileMap::loadLevel2(const string &levelFile, const glm::ivec2 &posM)
 #endif
 	}
 	fin.close();
-	map = new int[mapSize.x * mapSize.y];
-	for (int j = 0; j < mapSize.y; j++)
+	map = new int[mapSize.x * mapSize.y];    //A PARTIR DE AQUI LO METERMOS EN OTRA FUNCION PARA QUE NO 
+	for (int j = 0; j < mapSize.y; j++)		 //LEA EL BLOC DE NOTAS MIL VECES!!!! TENDREMOS QUE DECLARAR mapA EN EL .h !!!
 	{
 		for (int i = 0; i < mapSize.x; i++)
 		{
