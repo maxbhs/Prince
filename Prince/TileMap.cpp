@@ -18,7 +18,7 @@ TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoo
 
 TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM)
 {
-	loadLevel(levelFile, posM);
+	//loadLevel(levelFile, posM);
 	loadLevel2(levelFile, posM); //cambiar con la posicion del mapa a pintar!
 	shaderProgram = program;
 	minCoord = minCoords;
@@ -188,7 +188,7 @@ bool TileMap::loadLevel2(const string &levelFile, const glm::ivec2 &posM)
 #endif
 	}
 	fin.close();
-	
+	map = new int[mapSize.x * mapSize.y];
 	for (int j = 0; j < mapSize.y; j++)
 	{
 		for (int i = 0; i < mapSize.x; i++)
