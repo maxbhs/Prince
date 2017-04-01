@@ -59,7 +59,7 @@ void Scene::init2(int mov)  //mov=1 dreta, mov=2 esquerra, mov=3 abaix, mov=4 ad
 		y += 60;
 	}
 	else if (mov == 3){
-		posM.y++;
+		posM.y++; 
 		y = 65;
 		x += 20;
 	}
