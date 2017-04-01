@@ -8,17 +8,18 @@
 //nou
 using namespace std;
 
-TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program)
+TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM)
 {
-	TileMap *map = new TileMap(levelFile, minCoords, program);
+	TileMap *map = new TileMap(levelFile, minCoords, program, posM);
 	
 	return map;
 }
 
 
-TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program)
+TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM)
 {
-	loadLevel(levelFile);
+	//loadLevel(levelFile, posM);
+	loadLevel2(levelFile, posM); //cambiar con la posicion del mapa a pintar!
 	shaderProgram = program;
 	minCoord = minCoords;
 	prepareArrayBack(program);
@@ -66,7 +67,7 @@ void TileMap::free()
 	glDeleteBuffers(1, &vbo);
 }
 
-bool TileMap::loadLevel(const string &levelFile)
+bool TileMap::loadLevel(const string &levelFile, const glm::ivec2 &posM)
 {
 	ifstream fin;
 	string line, tilesheetFile;
@@ -82,6 +83,9 @@ bool TileMap::loadLevel(const string &levelFile)
 	getline(fin, line);
 	sstream.str(line);
 	sstream >> mapSize.x >> mapSize.y;
+	getline(fin, line);
+	sstream.str(line);
+	sstream >> nX >> nY;
 	getline(fin, line);
 	sstream.str(line);
 	sstream >> tileSize.x >> tileSize.y;
@@ -100,18 +104,19 @@ bool TileMap::loadLevel(const string &levelFile)
 	sstream.str(line);
 	sstream >> tilesheetSize.x >> tilesheetSize.y;
 	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
-	
 	map = new int[mapSize.x * mapSize.y];
 	for(int j=0; j<mapSize.y; j++)
 	{
-		for(int i=0; i<mapSize.x; i++)
+		for (int i = 0; i < mapSize.x; i++)
 		{
 			fin.get(tile);
+			
 			if (tile >= 'A' && tile < 'a') map[j*mapSize.x + i] = (tile - int('A')) + 10;
-			else if(tile == ' ')
-				map[j*mapSize.x+i] = 0;
+			else if (tile == ' ')
+				map[j*mapSize.x + i] = 0;
 			else
-				map[j*mapSize.x+i] = tile - int('0');
+				map[j*mapSize.x + i] = tile - int('0');
+			
 		}
 		fin.get(tile);
 #ifndef _WIN32
@@ -120,6 +125,79 @@ bool TileMap::loadLevel(const string &levelFile)
 	}
 	fin.close();
 	
+	return true;
+}
+
+bool TileMap::loadLevel2(const string &levelFile, const glm::ivec2 &posM)
+{
+	ifstream fin;
+	string line, tilesheetFile;
+	stringstream sstream;
+	char tile;
+
+	fin.open(levelFile.c_str());
+	if (!fin.is_open())
+		return false;
+	getline(fin, line);
+	if (line.compare(0, 7, "TILEMAP") != 0)
+		return false;
+	getline(fin, line);
+	sstream.str(line);
+	sstream >> mapSize.x >> mapSize.y;
+	getline(fin, line);
+	sstream.str(line);
+	sstream >> nX >> nY;
+	getline(fin, line);
+	sstream.str(line);
+	sstream >> tileSize.x >> tileSize.y;
+	getline(fin, line);
+	sstream.str(line);
+	sstream >> blockSize.x >> blockSize.y;
+	getline(fin, line);
+	sstream.str(line);
+	sstream >> tilesheetFile;
+	tilesheet.loadFromFile(tilesheetFile, TEXTURE_PIXEL_FORMAT_RGBA);
+	tilesheet.setWrapS(GL_CLAMP_TO_EDGE);
+	tilesheet.setWrapT(GL_CLAMP_TO_EDGE);
+	tilesheet.setMinFilter(GL_NEAREST);
+	tilesheet.setMagFilter(GL_NEAREST);
+	getline(fin, line);
+	sstream.str(line);
+	sstream >> tilesheetSize.x >> tilesheetSize.y;
+	
+	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
+	//nX = 2; nY = 2; //niveles
+	int mapAX, mapAY;
+	mapAX = (mapSize.x + (10 * (nX - 1))); //21
+	mapAY = (mapSize.y + (3 * (nY - 1))); //7
+	int *mapA = new int[mapAX * mapAY]; // 21 * 7
+	for (int j = 0; j<mapAY; j++)
+	{
+		for (int i = 0; i < mapAX; i++)
+		{
+			fin.get(tile);
+			if (tile >= 'A' && tile < 'a') mapA[j*mapAX + i] = (tile - int('A')) + 10;
+			else if (tile == ' ')
+				mapA[j*mapAX + i] = 0;
+			else
+				mapA[j*mapAX + i] = tile - int('0');
+		}
+		fin.get(tile);
+#ifndef _WIN32
+		fin.get(tile);
+#endif
+	}
+	fin.close();
+	map = new int[mapSize.x * mapSize.y];    //A PARTIR DE AQUI LO METERMOS EN OTRA FUNCION PARA QUE NO 
+	for (int j = 0; j < mapSize.y; j++)		 //LEA EL BLOC DE NOTAS MIL VECES!!!! TENDREMOS QUE DECLARAR mapA EN EL .h !!!
+	{
+		for (int i = 0; i < mapSize.x; i++)
+		{
+			map[j*mapSize.x + i] = mapA[((j+(3*(posM.y)))*mapAX) + (i+(10*(posM.x)))];
+			//map[j*mapSize.x + i] = mapA[((j+3)*mapAX) + i];
+		}
+	}
+
 	return true;
 }
 
@@ -190,7 +268,10 @@ void TileMap::prepareArrayFront(ShaderProgram &program){
 				tile = 34;
 				pintar = true;
 			}
-			else if (tile >= 32 && tile <= 33) pintar = true; //arreglar el problema
+			else if (tile >= 32 && tile <= 33) {
+				//if (tile != 33) tile = 32; //hablarlo con el max i cambiar el tile de la columna SOLA
+				pintar = true; //arreglar el problema
+			}
 			if (pintar) {
 				pintar = false;
 				ntiles++;
@@ -234,7 +315,7 @@ void TileMap::prepareArrayFront(ShaderProgram &program){
 
 bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
-	int x = (pos.x + size.x / 4 - 10) / tileSize.x;
+	int x = (pos.x + tileSize.x / 2 - 10) / tileSize.x;
 	int y = (pos.y + 10) / tileSize.y;
 
 	if (map[y*mapSize.x + x] == 11) return true;
@@ -249,7 +330,7 @@ bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) c
 bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
 	
-	int x = (pos.x + size.x / 4 + 10) / tileSize.x;
+	int x = (pos.x + tileSize.x / 2 + 10) / tileSize.x;
 	int y = (pos.y + 10) / tileSize.y;
 
 	if (map[y*mapSize.x + x] == 11) return true;
@@ -264,7 +345,7 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 
 bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size) const {
 
-	int x = (pos.x + size.x/4 ) / tileSize.x;
+	int x = (pos.x + tileSize.x/2 ) / tileSize.x;
 	int y = (pos.y) / tileSize.y;
 
 	if (map[y * mapSize.x + x] != 27){
@@ -274,59 +355,3 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size) c
 	}
 	return false;
 }
-
-bool TileMap::collisionMoveUp(const glm::ivec2 &pos, const glm::ivec2 &size, const bool &leftright) const {
-	int x0 = (pos.x + 5)/ tileSize.x;
-	int x1 = (pos.x + size.x/2)/ tileSize.x;
-	int x2 = (pos.x + size.x / 2) / tileSize.x;
-	int x3 = (pos.x + size.x);
-	int y = (pos.y + size.y/2) / tileSize.y;
-
-	if (leftright){
-		if (map[(y - 1)*mapSize.x + x1] == 27){
-			for (int i = 27; i < 34; i++){
-				if (map[(y - 1)*mapSize.x + x0] == i) return false;
-			}
-			return true;
-		}
-	}
-	else {
-		if (map[(y - 1)*mapSize.x + x2] == 27){
-			for (int i = 27; i < 34; i++){
-				if (map[(y - 1) * mapSize.x + x3] == i) return false;
-			}
-			return true;
-		}
-	}
-	return false;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
