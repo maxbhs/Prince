@@ -23,11 +23,11 @@ enum PlayerAnims
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
-	left = true;
+	leftright = true; // true = left / false = right
 	bJumping = false;
 	bDown = false;
 	bFalling = false;
-	canClimb = true;
+	//canClimb = true;
 	downPressed = false;
 	upPressed = false;
 	collLeft = false;
@@ -279,7 +279,7 @@ void Player::update(int deltaTime)
 	sprite->update(deltaTime);
 	if (Game::instance().getSpecialKey(GLUT_KEY_LEFT) && !bJumping && !bFalling && !collLeft)
 	{
-		left = true;
+		leftright = true;
 		collRight = false;
 		if (!bDown){
 			if (!upPressed){
@@ -387,7 +387,7 @@ void Player::update(int deltaTime)
 	}
 	else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT) && !bJumping && !bFalling && !collRight)
 	{
-		left = false;
+		leftright = false;
 		collLeft = false;
 		if (!bDown){
 			if (!upPressed){
@@ -813,7 +813,7 @@ void Player::update(int deltaTime)
 				}
 				else{
 					posPlayer.y = int(startY - JUMP_HEIGHT * sin(3.14159f * jumpAngle / 180.f));
-					if (canClimb && jumpAngle == 90){
+					if (map->collisionMoveUp(posPlayer,glm::ivec2(64,64),true) && jumpAngle == 90){
 						sprite->changeAnimation(CLIMB_LEFT);
 					}
 				}
@@ -828,7 +828,7 @@ void Player::update(int deltaTime)
 				}
 				else{
 					posPlayer.y = int(startY - JUMP_HEIGHT * sin(3.14159f * jumpAngle / 180.f));
-					if (canClimb && jumpAngle == 90){
+					if (map->collisionMoveUp(posPlayer,glm::ivec2(64, 64),false) && jumpAngle == 90){
 						sprite->changeAnimation(CLIMB_RIGHT);
 					}
 				}
@@ -861,19 +861,21 @@ void Player::update(int deltaTime)
 		if (sprite->animation() == CLIMB_LEFT_UP){
 			if (sprite->timetoChange(CLIMB_LEFT_UP)){
 				bJumping = false;
+				collLeft = false;
 				sprite->changeAnimation(STAND_LEFT);
 			}
 			else if (sprite->getKeyframe(CLIMB_LEFT_UP) == 3 ){
-				posPlayer.x -= 1;
+				posPlayer.x -= 2;
 			}
 		}
 		if (sprite->animation() == CLIMB_RIGHT_UP){
 			if (sprite->timetoChange(CLIMB_RIGHT_UP)){
 				bJumping = false;
+				collRight = false;
 				sprite->changeAnimation(STAND_RIGHT);
 			}
 			else if (sprite->getKeyframe(CLIMB_RIGHT_UP) == 3 ){
-				posPlayer.x += 1;
+				posPlayer.x += 2;
 			}
 		}
 		if (sprite->animation() == LAND_LEFT){
@@ -892,8 +894,8 @@ void Player::update(int deltaTime)
 		}
 	}
 	if (!bJumping){
-		if (!map->collisionMoveDown(posPlayer, glm::ivec2(15, 40))){
-			if (left){
+		if (!map->collisionMoveDown(posPlayer, glm::ivec2(64, 64))){
+			if (leftright){
 				sprite->changeAnimation(FALL_LEFT);
 			}
 			else {

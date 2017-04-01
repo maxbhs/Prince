@@ -21,13 +21,10 @@ public:
 	void setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
 	glm::vec2 getPosition();
-	
+
 private:
 
-	bool canIClimb();
-	bool canIFall();
-
-	bool bJumping, bDown, bFalling, canClimb, downPressed, upPressed, left;
+	bool bJumping, bDown, bFalling, canClimb, downPressed, upPressed, leftright;
 	bool collLeft, collRight;
 	glm::ivec2 tileMapDispl, posPlayer;
 	int jumpAngle, startY;
