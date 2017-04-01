@@ -59,10 +59,12 @@ void Scene::init2(int mov)  //mov=1 dreta, mov=2 esquerra, mov=3 abaix, mov=4 ad
 	else if (mov == 3){
 		posM.y++;
 		y = 1;
+		x += 3;
 	}
 	else if (mov == 4){
 		posM.y--;
 		y = 3;
+		x += 7;
 	}
 	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM);
 	player->setPosition(glm::vec2(x * map->getTileSize().x, (y * map->getTileSize().y) + 2)); //falta editar
