@@ -315,7 +315,7 @@ void TileMap::prepareArrayFront(ShaderProgram &program){
 
 bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
-	int x = (pos.x + tileSize.x / 2 - 10) / tileSize.x;
+	int x = (pos.x + size.x/4 - 10) / tileSize.x;
 	int y = (pos.y + 10) / tileSize.y;
 
 	if (map[y*mapSize.x + x] == 11) return true;
@@ -330,7 +330,7 @@ bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) c
 bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
 	
-	int x = (pos.x + tileSize.x / 2 + 10) / tileSize.x;
+	int x = (pos.x + size.x/4 + 10) / tileSize.x;
 	int y = (pos.y + 10) / tileSize.y;
 
 	if (map[y*mapSize.x + x] == 11) return true;
@@ -345,11 +345,38 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 
 bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size) const {
 
-	int x = (pos.x + tileSize.x/2 ) / tileSize.x;
+	int x = (pos.x + size.x/4 ) / tileSize.x;
 	int y = (pos.y) / tileSize.y;
 
 	if (map[y * mapSize.x + x] != 27){
 		if (pos.y >= tileSize.y * y){
+			return true;
+		}
+	}
+	return false;
+}
+
+bool TileMap::collisionMoveUp(const glm::ivec2 &pos, const glm::ivec2 &size, const bool &leftright) const {
+	int x0 = (pos.x + 5) / tileSize.x;
+	int x1 = (pos.x + size.x / 2) / tileSize.x;
+	int x2 = (pos.x + size.x / 2) / tileSize.x;
+	int x3 = (pos.x + size.x);
+	int y = (pos.y + size.y / 2) / tileSize.y;
+	
+		if (leftright){
+		if (map[(y - 1)*mapSize.x + x1] == 27){
+			for (int i = 27; i < 34; i++){
+				if (map[(y - 1)*mapSize.x + x0] == i) return false;
+				
+			}
+			return true;
+		}
+	}
+	else {
+		if (map[(y - 1)*mapSize.x + x2] == 27){
+			for (int i = 27; i < 34; i++){
+				if (map[(y - 1) * mapSize.x + x3] == i) return false;
+			}
 			return true;
 		}
 	}
