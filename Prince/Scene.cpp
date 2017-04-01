@@ -44,30 +44,32 @@ void Scene::init()
 
 void Scene::init2(int mov)  //mov=1 dreta, mov=2 esquerra, mov=3 abaix, mov=4 adalt
 {
-	glm::vec2 p = player->getPositionTile();
+	glm::vec2 p = player->getPosition();
 	int x = p.x;
 	int y = p.y;
-
+	//x += 32;
 	if (mov == 1){
 		posM.x++;
-		x = 0;
+		x = 5;
+		y +=60;
 	}
 	else if (mov == 2){
 		posM.x--;
-		x = 10;
+		x = 315;
+		y += 60;
 	}
 	else if (mov == 3){
 		posM.y++;
-		y = 1;
-		x += 3;
+		y = 65;
+		x += 20;
 	}
 	else if (mov == 4){
 		posM.y--;
-		y = 3;
-		x += 7;
+		y = 195;
+		x += 30;
 	}
 	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM, false);
-	player->setPosition(glm::vec2(x * map->getTileSize().x, (y * map->getTileSize().y) + 2)); //falta editar
+	player->setPosition(glm::vec2(x, y)); //falta editar
 	player->setTileMap(map);
 }
 
