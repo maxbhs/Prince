@@ -32,7 +32,7 @@ void Scene::init()
 	posM.x = 0;
 	posM.y = 0;
 	initShaders();
-	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM);
+	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM, true);
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize().x, (INIT_PLAYER_Y_TILES * map->getTileSize().y)+2));
@@ -66,7 +66,7 @@ void Scene::init2(int mov)  //mov=1 dreta, mov=2 esquerra, mov=3 abaix, mov=4 ad
 		y = 3;
 		x += 7;
 	}
-	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM);
+	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM, false);
 	player->setPosition(glm::vec2(x * map->getTileSize().x, (y * map->getTileSize().y) + 2)); //falta editar
 	player->setTileMap(map);
 }
