@@ -8,18 +8,19 @@
 //nou
 using namespace std;
 
-TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM)
+TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM, bool FT)
 {
-	TileMap *map = new TileMap(levelFile, minCoords, program, posM);
+	TileMap *map = new TileMap(levelFile, minCoords, program, posM, FT);
 	
 	return map;
 }
 
 
-TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM)
+TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM, bool FT)
 {
 	//loadLevel(levelFile, posM);
-	loadLevel2(levelFile, posM); //cambiar con la posicion del mapa a pintar!
+	loadLevel2(levelFile, posM);//cambiar con la posicion del mapa a pintar!
+	cargamapa(posM);
 	shaderProgram = program;
 	minCoord = minCoords;
 	prepareArrayBack(program);
@@ -166,11 +167,10 @@ bool TileMap::loadLevel2(const string &levelFile, const glm::ivec2 &posM)
 	sstream >> tilesheetSize.x >> tilesheetSize.y;
 	
 	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
-	//nX = 2; nY = 2; //niveles
-	int mapAX, mapAY;
 	mapAX = (mapSize.x + (10 * (nX - 1))); //21
 	mapAY = (mapSize.y + (3 * (nY - 1))); //7
-	int *mapA = new int[mapAX * mapAY]; // 21 * 7
+	mapA = new int[mapAX * mapAY]; // 21 * 7
+	map = new int[mapSize.x * mapSize.y];
 	for (int j = 0; j<mapAY; j++)
 	{
 		for (int i = 0; i < mapAX; i++)
@@ -188,17 +188,22 @@ bool TileMap::loadLevel2(const string &levelFile, const glm::ivec2 &posM)
 #endif
 	}
 	fin.close();
-	map = new int[mapSize.x * mapSize.y];    //A PARTIR DE AQUI LO METERMOS EN OTRA FUNCION PARA QUE NO 
+
+	return true;
+}
+
+void TileMap::cargamapa(const glm::ivec2 &posM)
+{
+	    //A PARTIR DE AQUI LO METERMOS EN OTRA FUNCION PARA QUE NO 
 	for (int j = 0; j < mapSize.y; j++)		 //LEA EL BLOC DE NOTAS MIL VECES!!!! TENDREMOS QUE DECLARAR mapA EN EL .h !!!
 	{
 		for (int i = 0; i < mapSize.x; i++)
 		{
-			map[j*mapSize.x + i] = mapA[((j+(3*(posM.y)))*mapAX) + (i+(10*(posM.x)))];
+			map[j*mapSize.x + i] = mapA[((j + (3 * (posM.y)))*mapAX) + (i + (10 * (posM.x)))];
 			//map[j*mapSize.x + i] = mapA[((j+3)*mapAX) + i];
 		}
 	}
 
-	return true;
 }
 
 void TileMap::prepareArrayBack(ShaderProgram &program)

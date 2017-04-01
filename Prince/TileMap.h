@@ -18,9 +18,9 @@ class TileMap
 
 public:
 	// Tile maps can only be created inside an OpenGL context
-	static TileMap *createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM);
+	static TileMap *createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM, bool FT);
 
-	TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM);
+	TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM, bool FT);
 	~TileMap();
 
 	void render_back(ShaderProgram &program);
@@ -37,6 +37,7 @@ public:
 private:
 	bool loadLevel(const string &levelFile, const glm::ivec2 &posM);
 	bool loadLevel2(const string &levelFile, const glm::ivec2 &posM);
+	void cargamapa(const glm::ivec2 &posM);
 	void prepareArrayBack(ShaderProgram &program);
 	void prepareArrayFront(ShaderProgram &program);
 
@@ -49,9 +50,9 @@ private:
 	Texture tilesheet;
 	ShaderProgram shaderProgram;
 	glm::vec2 tileTexSize, minCoord;
-	int *map;
+	int *map, *mapA;
 	int ntilesFront;
-	int nX, nY;
+	int nX, nY, mapAX, mapAY;
 
 };
 
