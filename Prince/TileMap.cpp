@@ -320,7 +320,7 @@ void TileMap::prepareArrayFront(ShaderProgram &program){
 
 bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
-	int x = (pos.x + size.x/4) / tileSize.x;
+	int x = (pos.x + size.x/4 -10) / tileSize.x;
 	int y = (pos.y + 10)/ tileSize.y;
 
 	if (map[y*mapSize.x + x] == 11) return true;
