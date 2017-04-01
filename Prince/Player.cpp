@@ -936,7 +936,7 @@ glm::vec2 Player::getPosition()
 
 glm::ivec2 Player::getPositionTile()
 {
-	glm::ivec2 p = glm::ivec2(((posPlayer.x + 32 -25) / 32, (posPlayer.y + 32 - 60) / 63));
+	glm::ivec2 p = glm::ivec2(((posPlayer.x + 32) / 32, (posPlayer.y + 32) / 63));
 	return p;
 }
 
