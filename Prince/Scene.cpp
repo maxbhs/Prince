@@ -8,8 +8,8 @@
 #define SCREEN_X -30
 #define SCREEN_Y -60
 
-#define INIT_PLAYER_X_TILES 3
-#define INIT_PLAYER_Y_TILES 3
+#define INIT_PLAYER_X_TILES 9
+#define INIT_PLAYER_Y_TILES 2
 
 
 Scene::Scene()
@@ -44,19 +44,33 @@ void Scene::init()
 
 void Scene::init2(int mov)  //mov=1 dreta, mov=2 esquerra, mov=3 abaix, mov=4 adalt
 {
-	if (mov == 1) posM.x++;
-	else if (mov == 2) posM.x--;
-	else if (mov == 3) posM.y++;
-	else if (mov == 4) posM.y--;
+	glm::vec2 p = player->getPositionTile();
+	int x = p.x;
+	int y = p.y;
+
+	if (mov == 1){
+		posM.x++;
+		x = x % 11;
+		y = y % 4;
+	}
+	else if (mov == 2){
+		posM.x--;
+		x = x % 11;
+		y = y % 4;
+	}
+	else if (mov == 3){
+		posM.y++;
+		x = x % 11;
+		y = y % 4;
+	}
+	else if (mov == 4){
+		posM.y--;
+		x = x % 11;
+		y = y % 4;
+	}
 	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM);
-	//player = new Player();
-	//player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize().x, (INIT_PLAYER_Y_TILES * map->getTileSize().y) + 2)); //falta editar
+	player->setPosition(glm::vec2(x * map->getTileSize().x, (y * map->getTileSize().y) + 2)); //falta editar
 	player->setTileMap(map);
-	//projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
-	//currentTime = 0.0f;
-
-
 }
 
 void Scene::update(int deltaTime)
@@ -85,8 +99,6 @@ void Scene::render()
 
 	map->render_back(texProgram);
 	player->render();
-	
-	glm::ivec2 p = player->getPosition();
 	map->render_front(texProgram);
 	
 

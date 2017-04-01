@@ -930,7 +930,13 @@ void Player::setPosition(const glm::vec2 &pos)
 
 glm::vec2 Player::getPosition()
 {
-	glm::vec2 p = glm::vec2(float(tileMapDispl.x+posPlayer.x), float(tileMapDispl.y+posPlayer.y));
+	glm::vec2 p = (glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+	return p;
+}
+
+glm::ivec2 Player::getPositionTile()
+{
+	glm::ivec2 p = glm::ivec2(((posPlayer.x + 3) / 32, (posPlayer.y + 32) / 63));
 	return p;
 }
 
