@@ -115,5 +115,9 @@ int Sprite::getKeyframe(int animId) const{
 	return currentKeyframe;
 }
 
+void Sprite::setKeyframe(int animId, int keyframe){
+	currentKeyframe = keyframe;
+}
+
 
 

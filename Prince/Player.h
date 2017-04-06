@@ -15,24 +15,36 @@ class Player
 
 public:
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
-	void update(int deltaTime);
+	void update(int deltaTime, glm::ivec2 &posM);
+	void update(int deltaTime, glm::vec2 posEnemy, int anim, int key);
+	void update(int deltaTime, glm::vec2 posEnemy, int anim);
+	void update(int deltaTime, int vida);
 	void render();
+	
 	
 	void setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
 	glm::vec2 getPosition();
-	glm::ivec2 getPositionTile();
+    glm::ivec2 getPositionTile();
+	int getVida();
+	int getCurrentAnim();
+	int getCurrentKeyframe(int animId);
+	bool saltando();
+	void ha_caido();
 
 private:
 
-	bool bJumping, bDown, bFalling, canClimb, downPressed, upPressed, leftright;
-	bool collLeft, collRight;
-	glm::ivec2 tileMapDispl, posPlayer;
+	bool bJumping, bDown, bFalling, bFighting, bHealing;
+	bool downPressed, upPressed, efePressed, cPressed;
+	bool collLeft, collRight, leftright;
+	glm::ivec2 posPlayer;
+	glm::ivec2 tileMapDispl, lastposM;
 	int jumpAngle, startY;
-	char last;
+	int vida, cd, lastkey, contkey;
 	Texture spritesheet;
 	Sprite *sprite;
 	TileMap *map;
+	int diffposM;
 };
 
 
