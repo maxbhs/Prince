@@ -15,10 +15,10 @@ enum PlayerAnims
 {
 	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, START_MOVE_LEFT, START_MOVE_RIGHT, STOP_MOVE_LEFT, STOP_MOVE_RIGHT,
 	SWITCH_TO_LEFT, SWITCH_TO_RIGHT, SWITCH_TO_LEFT_RUNNING, SWITCH_TO_RIGHT_RUNNING, START_JUMP_LEFT_UP, START_JUMP_RIGHT_UP, JUMP_LEFT_UP, JUMP_RIGHT_UP,
-	STOP_JUMP_LEFT_UP, STOP_JUMP_RIGHT_UP, START_JUMP_LEFT, START_JUMP_RIGHT, JUMP_LEFT, JUMP_RIGHT, STOP_JUMP_LEFT, STOP_JUMP_RIGHT, START_JUMP_LEFT_RUN, START_JUMP_RIGHT_RUN, JUMP_LEFT_RUN, JUMP_RIGHT_RUN, CLIMB_LEFT, CLIMB_RIGHT, CLIMB_LEFT_UP, CLIMB_RIGHT_UP,
-	DOWN_LEFT, DOWN_RIGHT, STAND_DOWN_LEFT, STAND_DOWN_RIGHT, MOVE_DOWN_LEFT, MOVE_DOWN_RIGHT, UP_LEFT, UP_RIGHT, WALK_LEFT, WALK_RIGHT, START_WALK_LEFT,
-	START_WALK_RIGHT, START_FALL_LEFT, START_FALL_RIGHT, FALL_LEFT, FALL_RIGHT, LAND_LEFT, LAND_RIGHT, START_FIGHT_LEFT, START_FIGHT_RIGHT, STOP_FIGHT_LEFT, STOP_FIGHT_RIGHT, ATTACK_LEFT, ATTACK_RIGHT,
-	PARRI_LEFT, PARRI_RIGHT, IDLE_FIGHT_LEFT, IDLE_FIGHT_RIGHT, DIE_LEFT, DIE_RIGHT, RIP_LEFT, RIP_RIGHT, HEAL_LEFT, HEAL_RIGHT
+	STOP_JUMP_LEFT_UP, STOP_JUMP_RIGHT_UP, START_JUMP_LEFT, START_JUMP_RIGHT, JUMP_LEFT, JUMP_RIGHT, STOP_JUMP_LEFT, STOP_JUMP_RIGHT, START_JUMP_LEFT_RUN,
+	START_JUMP_RIGHT_RUN, JUMP_LEFT_RUN, JUMP_RIGHT_RUN, CLIMB_LEFT, CLIMB_RIGHT, CLIMB_LEFT_UP, CLIMB_RIGHT_UP, DESCEND_LEFT, DESCEND_RIGHT, DOWN_LEFT, DOWN_RIGHT, STAND_DOWN_LEFT, STAND_DOWN_RIGHT, MOVE_DOWN_LEFT, MOVE_DOWN_RIGHT, UP_LEFT, UP_RIGHT, WALK_LEFT, WALK_RIGHT, START_WALK_LEFT,
+	START_WALK_RIGHT, START_FALL_LEFT, START_FALL_RIGHT, FALL_LEFT, FALL_RIGHT, LAND_LEFT, LAND_RIGHT, START_FIGHT_LEFT, START_FIGHT_RIGHT, 
+	STOP_FIGHT_LEFT, STOP_FIGHT_RIGHT, ATTACK_LEFT, ATTACK_RIGHT, PARRI_LEFT, PARRI_RIGHT, IDLE_FIGHT_LEFT, IDLE_FIGHT_RIGHT, DIE_LEFT, DIE_RIGHT, RIP_LEFT, RIP_RIGHT, HEAL_LEFT, HEAL_RIGHT
 };
 
 
@@ -46,7 +46,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 
 	spritesheet.loadFromFile("sprites/sprites-prince.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(64,64), glm::vec2(0.05f, 0.05f), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(66);
+	sprite->setNumberAnimations(68);
 
 
 		sprite->setAnimationSpeed(STAND_LEFT, 8);
@@ -206,6 +206,25 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 		for (int i = 0; i < 4; i++){
 			sprite->addKeyframe(CLIMB_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.65f));
 		}
+
+
+		sprite->setAnimationSpeed(DESCEND_LEFT, 8);
+		for (int i = 0; i > 0; i--){
+			sprite->addKeyframe(DESCEND_LEFT, glm::vec2(0.f + 1- (i / 20.0f), 0.65f));
+		}
+		for (int i = 8; i > 2; i--){
+			sprite->addKeyframe(DESCEND_LEFT, glm::vec2(0.f + 1 -(i / 20.0f), 0.65f));
+		}
+
+		sprite->setAnimationSpeed(DESCEND_RIGHT, 8);
+		for (int i = 1; i >= 0; i--){
+			sprite->addKeyframe(DESCEND_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.65f));
+		}
+		for (int i = 9; i >= 2; i--){
+			sprite->addKeyframe(DESCEND_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.65f));
+		}
+
+
 		sprite->setAnimationSpeed(CLIMB_LEFT_UP, 8);
 		for (int i = 5; i <= 10; i++){
 			sprite->addKeyframe(CLIMB_LEFT_UP, glm::vec2(0.f + 1 - (i / 20.0f), 0.65f));
@@ -250,12 +269,18 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 		}
 
 		sprite->setAnimationSpeed(WALK_LEFT, 8);
-		for (int i = 1; i <= 8; i++){
+		for (int i = 1; i <= 3; i++){
+			sprite->addKeyframe(WALK_LEFT, glm::vec2(0.f + (1 - (i / 20.0f)), 0.75f));
+		}
+		for (int i = 6; i <= 8; i++){
 			sprite->addKeyframe(WALK_LEFT, glm::vec2(0.f + (1 - (i / 20.0f)), 0.75f));
 		}
 
 		sprite->setAnimationSpeed(WALK_RIGHT, 8);
-		for (int i = 0; i < 8; i++){
+		for (int i = 0; i < 3; i++){
+			sprite->addKeyframe(WALK_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.75f));
+		}
+		for (int i = 5; i < 8; i++){
 			sprite->addKeyframe(WALK_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.75f));
 		}
 
@@ -401,8 +426,10 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 				if (sprite->animation() == STAND_RIGHT){
 					sprite->changeAnimation(SWITCH_TO_LEFT);
 				}
+				if (sprite->animation() == WALK_RIGHT){
+					sprite->changeAnimation(SWITCH_TO_LEFT);
+				}
 				if (sprite->animation() == MOVE_RIGHT){
-
 					sprite->changeAnimation(SWITCH_TO_LEFT_RUNNING);
 				}
 				if (sprite->animation() == START_MOVE_RIGHT){
@@ -463,8 +490,8 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 			if (sprite->animation() == STOP_MOVE_LEFT || sprite->animation() == MOVE_DOWN_LEFT){
 				posPlayer.x -= 1;
 			}
-			if (sprite->animation() == WALK_LEFT && sprite->getKeyframe(WALK_LEFT) == 5){
-				posPlayer.x -= 2;
+			if (sprite->animation() == WALK_LEFT && sprite->getKeyframe(WALK_LEFT) == 3){
+				posPlayer.x -= 1;
 			}
 
 			if (map->collisionMoveLeft(posPlayer, glm::ivec2(64, 64))){
@@ -486,7 +513,7 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 				}
 				if (sprite->animation() == WALK_RIGHT){
 					sprite->changeAnimation(STAND_LEFT);
-					posPlayer.x -= 2;
+					posPlayer.x -= 1;
 				}
 				collLeft = true;
 			}
@@ -557,6 +584,9 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 				if (sprite->animation() == STAND_LEFT){
 					sprite->changeAnimation(SWITCH_TO_RIGHT);
 				}
+				if (sprite->animation() == WALK_LEFT){
+					sprite->changeAnimation(SWITCH_TO_RIGHT);
+				}
 				if (sprite->animation() == MOVE_LEFT){
 					sprite->changeAnimation(SWITCH_TO_RIGHT_RUNNING);
 				}
@@ -618,8 +648,8 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 			if (sprite->animation() == STOP_MOVE_RIGHT || sprite->animation() == MOVE_DOWN_RIGHT){
 				posPlayer.x += 1;
 			}
-			if (sprite->animation() == WALK_RIGHT && sprite->getKeyframe(WALK_RIGHT) == 5){
-				posPlayer.x += 2;
+			if (sprite->animation() == WALK_RIGHT && sprite->getKeyframe(WALK_RIGHT) == 3){
+				posPlayer.x += 1;
 			}
 
 			if (map->collisionMoveRight(posPlayer, glm::ivec2(64, 64))){
@@ -641,7 +671,7 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 				}
 				if (sprite->animation() == WALK_RIGHT){
 					sprite->changeAnimation(STAND_RIGHT);
-					posPlayer.x -= 2;
+					posPlayer.x -= 1;
 				}
 				collRight = true;
 			}
@@ -699,13 +729,27 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 			downPressed = true;
 		}
 		else if (!Game::instance().getSpecialKey(GLUT_KEY_DOWN) && downPressed && !bFalling && !bHealing){
-			if (sprite->animation() == STAND_LEFT || sprite->animation() == START_MOVE_LEFT || sprite->animation() == MOVE_LEFT || sprite->animation() == STOP_MOVE_LEFT || sprite->animation() == SWITCH_TO_LEFT){
-				bDown = true;
-				sprite->changeAnimation(DOWN_LEFT);
+			if (leftright){
+				if (map->collisionMoveDown2(posPlayer, glm::ivec2(64, 64), true)){
+					if (sprite->animation() != DESCEND_RIGHT)
+						sprite->changeAnimation(DESCEND_RIGHT);
+				}
+				else {
+					if (sprite->animation() == STAND_LEFT || sprite->animation() == START_MOVE_LEFT || sprite->animation() == MOVE_LEFT || sprite->animation() == STOP_MOVE_LEFT || sprite->animation() == SWITCH_TO_LEFT){
+						bDown = true;
+						sprite->changeAnimation(DOWN_LEFT);
+					}
+				}
 			}
-			if (sprite->animation() == STAND_RIGHT || sprite->animation() == START_MOVE_RIGHT || sprite->animation() == MOVE_RIGHT || sprite->animation() == STOP_MOVE_RIGHT || sprite->animation() == SWITCH_TO_RIGHT){
-				bDown = true;
-				sprite->changeAnimation(DOWN_RIGHT);
+			else {
+				if (map->collisionMoveDown2(posPlayer, glm::ivec2(64, 64), false)){
+					if (sprite->animation() != DESCEND_LEFT)
+						sprite->changeAnimation(DESCEND_LEFT);
+				}
+				else if (sprite->animation() == STAND_RIGHT || sprite->animation() == START_MOVE_RIGHT || sprite->animation() == MOVE_RIGHT || sprite->animation() == STOP_MOVE_RIGHT || sprite->animation() == SWITCH_TO_RIGHT){
+					bDown = true;
+					sprite->changeAnimation(DOWN_RIGHT);
+				}
 			}
 			downPressed = false;
 		}
@@ -835,21 +879,21 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 
 			if (sprite->animation() == WALK_LEFT){
 				if (!map->collisionMoveLeft(posPlayer, glm::ivec2(64, 64))){
-					if (sprite->getKeyframe(WALK_RIGHT) == 5) posPlayer.x -= 2;
+					if (sprite->getKeyframe(WALK_RIGHT) == 3) posPlayer.x -= 1;
 					else if (sprite->timetoChange(WALK_LEFT)){
 						sprite->changeAnimation(STAND_LEFT);
 					}
 				}
-				else posPlayer.x += 2;
+				else posPlayer.x += 1;
 			}
 			if (sprite->animation() == WALK_RIGHT){
 				if (!map->collisionMoveRight(posPlayer, glm::ivec2(64, 64))){
-					if (sprite->getKeyframe(WALK_RIGHT) == 5) posPlayer.x += 2;
+					if (sprite->getKeyframe(WALK_RIGHT) == 3) posPlayer.x += 1;
 					else if (sprite->timetoChange(WALK_RIGHT)){
 						sprite->changeAnimation(STAND_RIGHT);
 					}
 				}
-				else posPlayer.x -= 2;
+				else posPlayer.x -= 1;
 			}
 
 			if (sprite->animation() == STOP_MOVE_LEFT){
@@ -1170,6 +1214,7 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 				if (sprite->timetoChange(LAND_LEFT)){
 					bFalling = false;
 					bDown = false;
+					upPressed = false;
 					sprite->changeAnimation(STAND_LEFT);
 				}
 			}
@@ -1177,6 +1222,7 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 				if (sprite->timetoChange(LAND_RIGHT)){
 					bDown = false;
 					bFalling = false;
+					upPressed = false;
 					sprite->changeAnimation(STAND_RIGHT);
 				}
 			}
@@ -1198,13 +1244,11 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 				if (sprite->timetoChange(START_FALL_LEFT)){
 					sprite->changeAnimation(FALL_LEFT);
 				}
-				else if (sprite->getKeyframe(START_FALL_LEFT) == 0) posPlayer.x -= 1;
 			}
 			if (sprite->animation() == START_FALL_RIGHT){
 				if (sprite->timetoChange(START_FALL_RIGHT)){
 					sprite->changeAnimation(FALL_RIGHT);
 				}
-				else if (sprite->getKeyframe(START_FALL_RIGHT) == 0)posPlayer.x += 1;
 			}
 		}
 		if (!bJumping){

@@ -38,6 +38,7 @@ public:
 	bool collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const;
+	bool collisionMoveDown2(const glm::ivec2 &pos, const glm::ivec2 &size, const bool &leftright) const;
 	bool collisionMoveUp(const glm::ivec2 &pos, const glm::ivec2 &size, const bool &leftright) const;
 
 	glm::ivec2 getnXnY();

@@ -361,26 +361,47 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	return false;
 }
 
+bool TileMap::collisionMoveDown2(const glm::ivec2 &pos, const glm::ivec2 &size, const bool &leftright) const {
+
+	int x = (pos.x + 32) / tileSize.x;
+	int x0 = (pos.x + size.x / 4 + 10) / tileSize.x;
+	int x1 = (pos.x + size.x / 4 - 10) / tileSize.x;
+	int y = (pos.y + 32) / tileSize.y;
+
+	if (leftright){
+		if (map[y * mapSize.x + x - 1] == 27){
+			if(float(pos.x + size.x / 4 + 10) - float((x0)*tileSize.x) <= 20) return false; //Cambiar a true si es vol implementar el descend
+		}
+	}
+	else {
+		if (map[y * mapSize.x + x1 + 1] == 27){
+			if (float((x1+1)*tileSize.x) - float(pos.x + size.x/4 - 10) <= 20)  return false;//Cambiar a true si es vol implementar el descend
+		}
+	}
+
+	return false;
+}
+
 bool TileMap::collisionMoveUp(const glm::ivec2 &pos, const glm::ivec2 &size, const bool &leftright) const {
-	int x0 = (pos.x + size.x/4 +10) / tileSize.x;
-	int x1 = (pos.x + size.x/4 -10) / tileSize.x;
+	int x0 = (pos.x + size.x / 4 + 10) / tileSize.x;
+	int x1 = (pos.x + size.x / 4 - 10) / tileSize.x;
 	int y = (pos.y + size.y / 2) / tileSize.y;
-	
-		if (leftright){
+
+	if (leftright){
 		if (map[(y - 1)*mapSize.x + x0] == 27){
 			for (int i = 27; i < 34; i++){
-				if (map[(y - 1)*mapSize.x + x0 -1] == i) return false;
-				
+				if (map[(y - 1)*mapSize.x + x0 - 1] == i) return false;
+
 			}
-			if (float(pos.x + size.x/4 + 10) - float((x0)*tileSize.x) <= 15) return true;
+			if (float(pos.x + size.x / 4 + 10) - float((x0)*tileSize.x) <= 15) return true;
 		}
 	}
 	else {
 		if (map[(y - 1)*mapSize.x + x1] == 27){
 			for (int i = 27; i < 34; i++){
-				if (map[(y - 1) * mapSize.x + x1 +1] == i) return false;
+				if (map[(y - 1) * mapSize.x + x1 + 1] == i) return false;
 			}
-			if (float((x1+1)*tileSize.x) - float(pos.x+ size.x/4) -10 <= 5) return true;
+			if (float((x1 + 1)*tileSize.x) - float(pos.x + size.x / 4) - 10 <= 5) return true;
 		}
 	}
 	return false;
