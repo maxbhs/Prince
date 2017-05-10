@@ -1,9 +1,9 @@
 Daniel Medina Tolra,
 Max Melendez Llorens,
 
-#PRINCE OF PERSIA REMAKE
+# PRINCE OF PERSIA REMAKE
 
-##Funcionalitats:
+## Funcionalitats:
 - Interfície gràfica que mostra la vida, teva i dels enemics.
 - Dos nivells de distribució diferent.
 - Dues de les trampes que existeixen en el joc: Terra que cau i la trampa amb doble fulla.
@@ -18,7 +18,7 @@ similar a com ho fa en el joc original.
 - Teleport: Per tot el mapa hi ha uns cercles blaus que et teletransporten a uns cercles
 vermells.
 
-##Instruccions:
+## Instruccions:
 
 - Corre dreta: Mantenir apretada fletxa direcció dreta.
 - Corre esquerra: Mantenir apretada fletxa direcció esquerra.
@@ -33,6 +33,6 @@ vermells.
 - Atura atac enemic: (En posició combat) fletxa direcció avall.
 - C : (En posició combat i amb enemic a prop) Canviar direcció atac.
 
-##Jugar:
+## Jugar:
 - Descarga la capreta freeprince
 - Executa el freeprince.exe 
