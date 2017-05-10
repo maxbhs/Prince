@@ -30,7 +30,7 @@ public:
 	void free();
 
 	void prepareArrayTile(ShaderProgram &program, glm::ivec2 posT, int tile);
-	void preparePotion(ShaderProgram &program, const glm::ivec2 posT, const glm::ivec2 posM);
+	void changeTile(ShaderProgram &program, const glm::ivec2 posT, const glm::ivec2 posM, int tile);
 	void prepareMap(ShaderProgram &program, const glm::vec2 &posM);
 	
 	glm::ivec2 getTileSize() const { return tileSize; }

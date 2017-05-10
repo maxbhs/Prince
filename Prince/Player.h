@@ -15,10 +15,10 @@ class Player
 
 public:
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
-	void update(int deltaTime, glm::ivec2 &posM);
-	void update(int deltaTime, glm::vec2 posEnemy, int anim, int key);
-	void update(int deltaTime, glm::vec2 posEnemy, int anim);
-	void update(int deltaTime, int vida);
+	void update(int deltaTime, glm::ivec2 &posM); //update normal
+	void update(int deltaTime, int vida); //update poti
+	void update(int deltaTime, glm::vec2 posTrap, int anim, int key); //update trap
+	void update(int deltaTime, glm::vec2 posEnemy, int anim, int key, bool boss); //update enemy
 	void render();
 	
 	

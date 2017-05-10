@@ -12,10 +12,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimKeyframes.h" />
+    <ClInclude Include="Boss.h" />
+    <ClInclude Include="credits.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Interface.h" />
+    <ClInclude Include="gameover.h" />
+    <ClInclude Include="instruccions.h" />
+    <ClInclude Include="levelcompleted.h" />
+    <ClInclude Include="MenuPrincipal.h" />
+    <ClInclude Include="VidaBoss.h" />
+    <ClInclude Include="VidaPlayer.h" />
+    <ClInclude Include="VidaSoldier.h" />
     <ClInclude Include="Land.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
@@ -28,11 +37,20 @@
     <ClInclude Include="Trap.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="credits.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Interface.cpp" />
+    <ClCompile Include="gameover.cpp" />
+    <ClCompile Include="instruccions.cpp" />
+    <ClCompile Include="levelcompleted.cpp" />
+    <ClCompile Include="MenuPrincipal.cpp" />
+    <ClCompile Include="VidaBoss.cpp" />
+    <ClCompile Include="VidaPlayer.cpp" />
+    <ClCompile Include="VidaSoldier.cpp" />
     <ClCompile Include="Land.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />

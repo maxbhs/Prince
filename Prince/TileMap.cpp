@@ -232,9 +232,17 @@ void TileMap::prepareArrayFront(ShaderProgram &program){
 				tile = 34;
 				pintar = true;
 			}
-			else if (tile >= 32 && tile <= 33) {
+			else if (tile == 32 || tile == 33) {
 				//if (tile != 33) tile = 32; //hablarlo con el max i cambiar el tile de la columna SOLA
 				pintar = true; //arreglar el problema
+			}
+			else if (tile == 29 || tile == 30 || tile == 31) {
+				pintar = true;
+				tile = 39;
+			}
+			else if (tile >= 1 && tile < 26 && map[j * mapSize.x + i - 1] == 27 && tile != 13 && tile != 20 && tile != 11 && tile != 18 && tile != 23) {
+				pintar = true; //ir con cuidado de no salirsa de la matriz!
+				tile = 40;
 			}
 			if (pintar) {
 				pintar = false;
@@ -307,11 +315,12 @@ void TileMap::prepareArrayTile(ShaderProgram &program, glm::ivec2 posT, int t){
 	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void *)(2 * sizeof(float)));
 }
 
-void TileMap::preparePotion(ShaderProgram &program, const glm::ivec2 posT, const glm::ivec2 posM) {
-	mapA[((posT.y + (3 * (posM.y)))*mapAX) + (posT.x + (10 * (posM.x)))] = 4;
-	map[posT.y*mapSize.x + posT.x] = 4;
+void TileMap::changeTile(ShaderProgram &program, const glm::ivec2 posT, const glm::ivec2 posM, int tile) {
+	mapA[((posT.y + (3 * (posM.y)))*mapAX) + (posT.x + (10 * (posM.x)))] = tile;
+	map[posT.y*mapSize.x + posT.x] = tile;
 	prepareArrayBack(program);
 }
+
 
 // Collision tests for axis aligned bounding boxes.
 // Method collisionMoveDown also corrects Y coordinate if the box is

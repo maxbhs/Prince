@@ -7,11 +7,16 @@
 #include "TileMap.h"
 #include "Player.h"
 #include "Soldier.h"
-#include "Interface.h"
+#include "Boss.h"
+#include "VidaPlayer.h"
+#include "VidaSoldier.h"
+#include "VidaBoss.h"
 #include "Torch.h"
 #include "Door.h"
 #include "Trap.h"
 #include "Land.h"
+#include "gameover.h"
+#include "levelcompleted.h"
 
 
 // Scene contains all the entities of our game.
@@ -25,7 +30,7 @@ public:
 	Scene();
 	~Scene();
 
-	void init();
+	void init(bool lvl);
 	void init2(int mov, int tp);
 	void update(int deltaTime);
 	void render();
@@ -33,7 +38,8 @@ public:
 	void ini_teleport();
 	void teleport(glm::ivec2 posT);
 
-	void drawEnemy();
+	void drawSoldiers();
+	void drawBoss();
 	void drawTorchs();
 	void drawDoors();
 	void drawTraps();
@@ -45,12 +51,14 @@ private:
 
 private:
 	TileMap *map;
-	Interface *inter;
+	VidaPlayer *vidap;
+	VidaSoldier *vidas;
+	VidaBoss *vidab;
 	vector<Torch> torchsvec;
 	vector<Door> doorsvec;
 	vector<Trap> trapsvec;
 	vector<Land> landsvec;
-	vector<Soldier> soldiersvec;
+	vector<Soldier*> soldiersvec;
 	glm::ivec2 *aptp;
 	glm::ivec2 *amtp;
 	glm::ivec2 *rptp;
@@ -59,15 +67,25 @@ private:
 	float currentTime;
 	glm::mat4 projection;
 	glm::ivec2 posM, posMaux;
-	glm::vec2 *posEnemy;
-	bool *dirEnemy;
-	bool torchs, doors, traps, lands;
+	glm::vec2 *posSoldier;
+	glm::ivec2 posMapBoss;
+	glm::vec2 posTileBoss;
+	bool dirBoss;
+	bool *dirSoldier;
+	bool torchs, doors, traps, lands, bboss;
 	bool *soldiers;
+	bool nivell;
+	bool bossdead;
+	int vidaPlay, vidaSold, vidaBoss;
+	bool *lands2;
 	Player *player;
-	//Soldier *soldier;
-	int vidaPlayer, vidaEnemy;
+	Boss *boss;
+	gameover *go;
+	levelcompleted *lc;
 	bool puls;
 	int *cont;
+	int contGAMEOVER;
+	bool LEVELCOMPLETED;
 };
 
 

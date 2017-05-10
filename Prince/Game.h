@@ -3,6 +3,7 @@
 
 
 #include "Scene.h"
+#include "MenuPrincipal.h"
 
 
 #define SCREEN_WIDTH 320
@@ -26,7 +27,7 @@ public:
 		return G;
 	}
 	
-	void init();
+	void init(bool lvl, bool menu);
 	bool update(int deltaTime);
 	void render();
 	
@@ -44,7 +45,9 @@ public:
 
 private:
 	bool bPlay;                       // Continue to play game?
-	Scene scene;                      // Scene to render
+	Scene scene; // Scene to render
+	bool sc;
+	MenuPrincipal menuprincipal;
 	bool keys[256], specialKeys[256]; // Store key states so that 
 	                                  // we can have access at any time
 

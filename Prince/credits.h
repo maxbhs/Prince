@@ -1,5 +1,5 @@
-#ifndef _TRAP_INCLUDE
-#define _TRAP_INCLUDE
+#ifndef _CREDITS_INCLUDE
+#define _CREDITS_INCLUDE
 
 
 #include "Sprite.h"
@@ -8,7 +8,7 @@
 
 
 
-class Trap
+class credits
 {
 
 public:
@@ -17,16 +17,12 @@ public:
 	void render();
 
 	void setPosition(const glm::vec2 &pos);
-	glm::ivec2 getPositionTile();
-	glm::vec2 getPosition();
-	int getCurrentAnim();
-	int getCurrentKeyframe(int animId); 
 
 private:
-	glm::ivec2 tileMapDispl, posTrap;
+	glm::ivec2 tileMapDispl, posInst;
 	Texture spritesheet;
 	Sprite *sprite;
 };
 
 
-#endif // _TRAP_INCLUDE
+#endif // _CREDITS_INCLUDE

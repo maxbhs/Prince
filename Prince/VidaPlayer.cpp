@@ -2,16 +2,16 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include "Interface.h"
+#include "VidaPlayer.h"
 #include "Game.h"
 
-enum InterfaceAnims
+enum VPAnims
 {
 	FULL_VIDA, FIVE, FOUR, THREE, TWO, ONE, DEAD
 };
 
 
-void Interface::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
+void VidaPlayer::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
 	spritesheet.loadFromFile("sprites/sprites-vida.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(320, 8), glm::vec2(0.625f, 0.015625f), &spritesheet, &shaderProgram);
@@ -40,21 +40,21 @@ void Interface::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posInter.x), float(tileMapDispl.y + posInter.y)));
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posVP.x), float(tileMapDispl.y + posVP.y)));
 }
 
-void Interface::update(int deltaTime, int vida){
+void VidaPlayer::update(int deltaTime, int vida){
 	sprite->update(deltaTime);
 	sprite->changeAnimation(6-vida);
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posInter.x), float(tileMapDispl.y + posInter.y)));
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posVP.x), float(tileMapDispl.y + posVP.y)));
 }
 
-void Interface::render(){
+void VidaPlayer::render(){
 	sprite->render();
 }
 
-void Interface::setPosition(const glm::vec2 &pos)
+void VidaPlayer::setPosition(const glm::vec2 &pos)
 {
-	posInter = pos;
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posInter.x), float(tileMapDispl.y + posInter.y)));
+	posVP = pos;
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posVP.x), float(tileMapDispl.y + posVP.y)));
 }

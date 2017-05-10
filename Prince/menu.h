@@ -1,14 +1,16 @@
-#ifndef _TRAP_INCLUDE
-#define _TRAP_INCLUDE
+#ifndef _MENU_INCLUDE
+#define _MENU_INCLUDE
 
 
 #include "Sprite.h"
+#include "instruccions.h"
+#include "credits.h"
 #include "TileMap.h"
 
 
 
 
-class Trap
+class menu
 {
 
 public:
@@ -17,16 +19,17 @@ public:
 	void render();
 
 	void setPosition(const glm::vec2 &pos);
-	glm::ivec2 getPositionTile();
-	glm::vec2 getPosition();
-	int getCurrentAnim();
-	int getCurrentKeyframe(int animId); 
 
 private:
-	glm::ivec2 tileMapDispl, posTrap;
+	glm::ivec2 tileMapDispl, posMenu;
 	Texture spritesheet;
 	Sprite *sprite;
+	instruccions *instruc;
+	credits *credit;
+	ShaderProgram texProgram;
+	bool ins, cred;
+
 };
 
 
-#endif // _TRAP_INCLUDE
+#endif // _MENU_INCLUDE

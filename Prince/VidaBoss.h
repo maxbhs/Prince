@@ -1,5 +1,5 @@
-#ifndef _INTER_INCLUDE
-#define _INTER_INCLUDE
+#ifndef _VB_INCLUDE
+#define _VB_INCLUDE
 
 
 #include "Sprite.h"
@@ -8,7 +8,7 @@
 
 
 
-class Interface
+class VidaBoss
 {
 
 public:
@@ -19,11 +19,10 @@ public:
 	void setPosition(const glm::vec2 &pos);
 
 private:
-	glm::ivec2 tileMapDispl, posInter;
+	glm::ivec2 tileMapDispl, posVB;
 	Texture spritesheet;
 	Sprite *sprite;
 };
 
 
-#endif // _INTER_INCLUDE
-
+#endif // _VB_INCLUDE

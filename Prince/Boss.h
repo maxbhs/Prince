@@ -1,5 +1,5 @@
-#ifndef _SOLDIER_INCLUDE
-#define _SOLDIER_INCLUDE
+#ifndef _BOSS_INCLUDE
+#define _BOSS_INCLUDE
 
 
 #include "Sprite.h"
@@ -10,7 +10,7 @@
 // all properties it needs to track its movement, jumping, and collisions.
 
 
-class Soldier
+class Boss
 {
 
 public:
@@ -22,7 +22,7 @@ public:
 
 	void setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
-	
+
 	glm::vec2 getPosition();
 	glm::ivec2 getPositionTile();
 
@@ -34,9 +34,9 @@ public:
 private:
 
 	bool leftright;
-	glm::ivec2 tileMapDispl, posSoldier;
+	glm::ivec2 tileMapDispl, posBoss;
 	int startY;
-	int vida, cd, lastkey, contkey;
+	int vida, cd, cdulti, lastkey, contkey;
 	Texture spritesheet;
 	Sprite *sprite;
 	TileMap *map;
@@ -44,4 +44,6 @@ private:
 
 
 #endif // _SOLDIER_INCLUDE
+
+
 

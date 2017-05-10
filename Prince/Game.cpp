@@ -3,24 +3,40 @@
 #include "Game.h"
 
 
-void Game::init()
+void Game::init(bool lvl, bool menu)
 {
 	bPlay = true;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
-	scene.init();
+	sc = false;
+	if (menu){
+		menuprincipal.init();
+	}
+	else {
+		scene.init(lvl);
+		sc = true;
+	}
 }
 
 bool Game::update(int deltaTime)
 {
-	scene.update(deltaTime);
-	
+	if (!sc){
+		menuprincipal.update(deltaTime);
+	}
+	else {
+		scene.update(deltaTime);
+	}
 	return bPlay;
 }
 
 void Game::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	scene.render();
+	if (!sc){
+		menuprincipal.render();
+	}
+	else {
+		scene.render();
+	}
 }
 
 void Game::keyPressed(int key)

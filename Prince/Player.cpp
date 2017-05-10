@@ -388,10 +388,10 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	
 }
 
-void Player::update(int deltaTime, glm::ivec2 &posM)
+void Player::update(int deltaTime, glm::ivec2 &posM) //update normal
 {
 	sprite->update(deltaTime);
-	if (vida > 0){
+	if (vida > 0){ 
 		if (Game::instance().getKey(32) && !efePressed && !bJumping && !bFalling && !bDown && !bHealing){
 			efePressed = true;
 		}
@@ -1315,27 +1315,29 @@ void Player::update(int deltaTime, glm::ivec2 &posM)
 	}
 }
 
-void Player::update(int deltaTime, int v){
+void Player::update(int deltaTime, int v){ //update poti
 	if (v == 1){
 		if (leftright){
 			if (sprite->animation() != HEAL_LEFT){
 				sprite->changeAnimation(HEAL_LEFT);
 				bHealing = true;
+				bFighting = false;
 			}
 		}
 		else {
 			if (sprite->animation() != HEAL_RIGHT){
 				sprite->changeAnimation(HEAL_RIGHT);
 				bHealing = true;
+				bFighting = false;
 			}
 		}
 	}
 }
 
-void Player::update(int deltaTime, glm::vec2 posTrap, int anim){
+void Player::update(int deltaTime, glm::vec2 posTrap, int anim, int key){ // update trap
 	if (vida > 0){
-		if (anim == 0){
-			if (int(posPlayer.x + 32 / 16) == int(posTrap.x + 32 / 16)){
+		if (anim == 0 && (key == 3 || key == 4 || key == 5 || key == 6 || key == 7)){
+			if (((posPlayer.x + 32 <= posTrap.x + 31 + 16) && (posPlayer.x + 32 >= posTrap.x + 31 + 10)) && (int((posPlayer.y + 32) / 64) == int((posTrap.y + 32) / 64 + 1))){
 				vida = 0;
 				if (leftright){
 					if (sprite->animation() != DIE_LEFT)
@@ -1349,7 +1351,8 @@ void Player::update(int deltaTime, glm::vec2 posTrap, int anim){
 		}
 	}
 }
-void Player::update(int deltaTime, glm::vec2 posEnemy, int anim, int key){
+
+void Player::update(int deltaTime, glm::vec2 posEnemy, int anim, int key, bool boss){ //update enemy
 	if (lastkey == key) ++contkey;
 	else {
 		lastkey = key;
@@ -1375,11 +1378,28 @@ void Player::update(int deltaTime, glm::vec2 posEnemy, int anim, int key){
 			}
 			if (sqrt(pow(posEnemy.x - posPlayer.x, 2) + pow(posEnemy.y - posPlayer.y, 2)) < 3*32){
 				if ((anim == 7 || anim == 6) && key == 2 && contkey == 0){
-					//if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT)) posPlayer.x -= 1;
 					if (sprite->animation() != PARRI_RIGHT){
 						vida -= 1;
+						if (boss){
+							if (anim == 7) posPlayer.x += 16;
+							else if (anim == 6) posPlayer.x -= 16;
+						}
+
 						if (vida == 0) sprite->changeAnimation(DIE_RIGHT);
 					}
+				}
+				else if ((anim == 14 || anim == 15) && key == 2 && contkey == 0 && boss){
+					if (sprite->animation() == PARRI_RIGHT){
+						vida -= 1;
+						if (anim == 15) posPlayer.x += 16;
+						else if (anim == 14) posPlayer.x -= 16;
+					}
+					else {
+						vida -= 2;
+						if (anim == 15) posPlayer.x += 32;
+						else if (anim == 14) posPlayer.x -= 32;
+					}
+					if (vida <= 0) sprite->changeAnimation(DIE_RIGHT);
 				}
 			}
 		}
@@ -1401,11 +1421,28 @@ void Player::update(int deltaTime, glm::vec2 posEnemy, int anim, int key){
 			}
 			if (sqrt(pow(posEnemy.x - posPlayer.x, 2) + pow(posEnemy.y - posPlayer.y, 2)) < 3 * 32){
 				if ((anim == 7 || anim == 6) && key == 2 && contkey == 0){
-					//if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT)) posPlayer.x -= 1;
 					if (sprite->animation() != PARRI_LEFT){
 						vida -= 1;
+						if (boss){
+							if (anim == 7) posPlayer.x += 16;
+							else if (anim == 6) posPlayer.x -= 16;
+						}
+
 						if (vida == 0) sprite->changeAnimation(DIE_LEFT);
 					}
+				}
+				else if ((anim == 14 || anim == 15) && key == 2 && contkey == 0 && boss){
+					if (sprite->animation() == PARRI_LEFT){
+						vida -= 1;
+						if (anim == 15) posPlayer.x += 16;
+						else if (anim == 14) posPlayer.x -= 16;
+					}
+					else {
+						vida -= 2;
+						if (anim == 15) posPlayer.x += 32;
+						else if (anim == 14) posPlayer.x -= 32;
+					}
+					if (vida <= 0) sprite->changeAnimation(DIE_LEFT);
 				}
 			}
 		}
