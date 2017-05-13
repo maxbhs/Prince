@@ -1,47 +1,9 @@
-﻿Build started 10/05/2017 16:35:42.
+﻿Build started 13/05/2017 18:11:52.
      1>Project "D:\Documents\Prince\Prince\Prince.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"libs\Simple OpenGL Image Library\src" /I"libs\Simple OpenGL Image Library\projects\VC9\Debug" /Ilibs\freeglut\include /I"libs\glew-1.13.0\include" /Ilibs\glm /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Boss.cpp Door.cpp Game.cpp Land.cpp MenuPrincipal.cpp Player.cpp Scene.cpp Shader.cpp ShaderProgram.cpp Soldier.cpp Sprite.cpp Texture.cpp TileMap.cpp Torch.cpp Trap.cpp VidaBoss.cpp VidaPlayer.cpp VidaSoldier.cpp credits.cpp gameover.cpp instruccions.cpp levelcompleted.cpp main.cpp menu.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"libs\Simple OpenGL Image Library\src" /I"libs\Simple OpenGL Image Library\projects\VC9\Debug" /Ilibs\freeglut\include /I"libs\glew-1.13.0\include" /Ilibs\glm /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Player.cpp menu.cpp
          menu.cpp
-         main.cpp
-         levelcompleted.cpp
-         instruccions.cpp
-         gameover.cpp
-         credits.cpp
-         VidaSoldier.cpp
-         VidaPlayer.cpp
-         VidaBoss.cpp
-         Trap.cpp
-         Torch.cpp
-         TileMap.cpp
-         Texture.cpp
-         Sprite.cpp
-         Soldier.cpp
-         ShaderProgram.cpp
-         Shader.cpp
-         Scene.cpp
-     1>d:\documents\prince\prince\scene.cpp(199): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(220): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(227): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(232): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(242): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(343): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(347): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(352): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(360): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(368): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(652): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(664): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(676): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\prince\prince\scene.cpp(690): warning C4018: '<' : signed/unsigned mismatch
          Player.cpp
-         MenuPrincipal.cpp
-         Generating Code...
-         Compiling...
-         Land.cpp
-         Game.cpp
-         Door.cpp
-         Boss.cpp
          Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Documents\Prince\Debug\Prince.exe" /INCREMENTAL /NOLOGO /LIBPATH:libs\freeglut\lib /LIBPATH:"libs\glew-1.13.0\lib\Release\Win32" /LIBPATH:"libs\Simple OpenGL Image Library\src" /LIBPATH:"libs\Simple OpenGL Image Library\projects\VC9\Debug" /LIBPATH:libs\freeglut\include /LIBPATH:"libs\glew-1.13.0\include" /LIBPATH:libs\glm SOIL.lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Documents\Prince\Debug\Prince.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Documents\Prince\Debug\Prince.lib" /MACHINE:X86 Debug\Boss.obj
@@ -68,7 +30,6 @@
          Debug\TileMap.obj
          Debug\Torch.obj
          Debug\Trap.obj
-         LINK : D:\Documents\Prince\Debug\Prince.exe not found or not built by the last incremental link; performing full link
      1>SOIL.lib(image_DXT.obj) : warning LNK4099: PDB 'vc100.pdb' was not found with 'SOIL.lib(image_DXT.obj)' or at 'D:\Documents\Prince\Debug\vc100.pdb'; linking object as if no debug info
      1>SOIL.lib(image_helper.obj) : warning LNK4099: PDB 'vc100.pdb' was not found with 'SOIL.lib(image_helper.obj)' or at 'D:\Documents\Prince\Debug\vc100.pdb'; linking object as if no debug info
      1>SOIL.lib(SOIL.obj) : warning LNK4099: PDB 'vc100.pdb' was not found with 'SOIL.lib(SOIL.obj)' or at 'D:\Documents\Prince\Debug\vc100.pdb'; linking object as if no debug info
@@ -78,4 +39,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:13.68
+Time Elapsed 00:00:02.12

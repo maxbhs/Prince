@@ -16,7 +16,7 @@ enum PlayerAnims
 	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, START_MOVE_LEFT, START_MOVE_RIGHT, STOP_MOVE_LEFT, STOP_MOVE_RIGHT,
 	SWITCH_TO_LEFT, SWITCH_TO_RIGHT, SWITCH_TO_LEFT_RUNNING, SWITCH_TO_RIGHT_RUNNING, START_JUMP_LEFT_UP, START_JUMP_RIGHT_UP, JUMP_LEFT_UP, JUMP_RIGHT_UP,
 	STOP_JUMP_LEFT_UP, STOP_JUMP_RIGHT_UP, START_JUMP_LEFT, START_JUMP_RIGHT, JUMP_LEFT, JUMP_RIGHT, STOP_JUMP_LEFT, STOP_JUMP_RIGHT, START_JUMP_LEFT_RUN,
-	START_JUMP_RIGHT_RUN, JUMP_LEFT_RUN, JUMP_RIGHT_RUN, CLIMB_LEFT, CLIMB_RIGHT, CLIMB_LEFT_UP, CLIMB_RIGHT_UP, DESCEND_LEFT, DESCEND_RIGHT, DOWN_LEFT, DOWN_RIGHT, STAND_DOWN_LEFT, STAND_DOWN_RIGHT, MOVE_DOWN_LEFT, MOVE_DOWN_RIGHT, UP_LEFT, UP_RIGHT, WALK_LEFT, WALK_RIGHT, START_WALK_LEFT,
+	START_JUMP_RIGHT_RUN, JUMP_LEFT_RUN, JUMP_RIGHT_RUN, CLIMB_LEFT, CLIMB_RIGHT, CLIMB_LEFT_UP, CLIMB_RIGHT_UP, DOWN_LEFT, DOWN_RIGHT, STAND_DOWN_LEFT, STAND_DOWN_RIGHT, MOVE_DOWN_LEFT, MOVE_DOWN_RIGHT, UP_LEFT, UP_RIGHT, WALK_LEFT, WALK_RIGHT, START_WALK_LEFT,
 	START_WALK_RIGHT, START_FALL_LEFT, START_FALL_RIGHT, FALL_LEFT, FALL_RIGHT, LAND_LEFT, LAND_RIGHT, START_FIGHT_LEFT, START_FIGHT_RIGHT, 
 	STOP_FIGHT_LEFT, STOP_FIGHT_RIGHT, ATTACK_LEFT, ATTACK_RIGHT, PARRI_LEFT, PARRI_RIGHT, IDLE_FIGHT_LEFT, IDLE_FIGHT_RIGHT, DIE_LEFT, DIE_RIGHT, RIP_LEFT, RIP_RIGHT, HEAL_LEFT, HEAL_RIGHT
 };
@@ -46,7 +46,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 
 	spritesheet.loadFromFile("sprites/sprites-prince.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(64,64), glm::vec2(0.05f, 0.05f), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(68);
+	sprite->setNumberAnimations(66);
 
 
 		sprite->setAnimationSpeed(STAND_LEFT, 8);
@@ -206,24 +206,6 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 		for (int i = 0; i < 4; i++){
 			sprite->addKeyframe(CLIMB_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.65f));
 		}
-
-
-		sprite->setAnimationSpeed(DESCEND_LEFT, 8);
-		for (int i = 0; i > 0; i--){
-			sprite->addKeyframe(DESCEND_LEFT, glm::vec2(0.f + 1- (i / 20.0f), 0.65f));
-		}
-		for (int i = 8; i > 2; i--){
-			sprite->addKeyframe(DESCEND_LEFT, glm::vec2(0.f + 1 -(i / 20.0f), 0.65f));
-		}
-
-		sprite->setAnimationSpeed(DESCEND_RIGHT, 8);
-		for (int i = 1; i >= 0; i--){
-			sprite->addKeyframe(DESCEND_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.65f));
-		}
-		for (int i = 9; i >= 2; i--){
-			sprite->addKeyframe(DESCEND_RIGHT, glm::vec2(0.f + (i / 20.0f), 0.65f));
-		}
-
 
 		sprite->setAnimationSpeed(CLIMB_LEFT_UP, 8);
 		for (int i = 5; i <= 10; i++){
@@ -729,27 +711,14 @@ void Player::update(int deltaTime, glm::ivec2 &posM) //update normal
 			downPressed = true;
 		}
 		else if (!Game::instance().getSpecialKey(GLUT_KEY_DOWN) && downPressed && !bFalling && !bHealing){
-			if (leftright){
-				if (map->collisionMoveDown2(posPlayer, glm::ivec2(64, 64), true)){
-					if (sprite->animation() != DESCEND_RIGHT)
-						sprite->changeAnimation(DESCEND_RIGHT);
-				}
-				else {
-					if (sprite->animation() == STAND_LEFT || sprite->animation() == START_MOVE_LEFT || sprite->animation() == MOVE_LEFT || sprite->animation() == STOP_MOVE_LEFT || sprite->animation() == SWITCH_TO_LEFT){
-						bDown = true;
-						sprite->changeAnimation(DOWN_LEFT);
-					}
-				}
+			if (sprite->animation() == STAND_LEFT || sprite->animation() == START_MOVE_LEFT || sprite->animation() == MOVE_LEFT || sprite->animation() == STOP_MOVE_LEFT || sprite->animation() == SWITCH_TO_LEFT){
+				bDown = true;
+				sprite->changeAnimation(DOWN_LEFT);
 			}
-			else {
-				if (map->collisionMoveDown2(posPlayer, glm::ivec2(64, 64), false)){
-					if (sprite->animation() != DESCEND_LEFT)
-						sprite->changeAnimation(DESCEND_LEFT);
-				}
-				else if (sprite->animation() == STAND_RIGHT || sprite->animation() == START_MOVE_RIGHT || sprite->animation() == MOVE_RIGHT || sprite->animation() == STOP_MOVE_RIGHT || sprite->animation() == SWITCH_TO_RIGHT){
-					bDown = true;
-					sprite->changeAnimation(DOWN_RIGHT);
-				}
+				
+			if (sprite->animation() == STAND_RIGHT || sprite->animation() == START_MOVE_RIGHT || sprite->animation() == MOVE_RIGHT || sprite->animation() == STOP_MOVE_RIGHT || sprite->animation() == SWITCH_TO_RIGHT){
+				bDown = true;
+				sprite->changeAnimation(DOWN_RIGHT);
 			}
 			downPressed = false;
 		}

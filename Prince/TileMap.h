@@ -31,14 +31,13 @@ public:
 
 	void prepareArrayTile(ShaderProgram &program, glm::ivec2 posT, int tile);
 	void changeTile(ShaderProgram &program, const glm::ivec2 posT, const glm::ivec2 posM, int tile);
-	void prepareMap(ShaderProgram &program, const glm::vec2 &posM);
+	void prepareScreen(ShaderProgram &program, const glm::vec2 &posM);
 	
 	glm::ivec2 getTileSize() const { return tileSize; }
 
 	bool collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const;
-	bool collisionMoveDown2(const glm::ivec2 &pos, const glm::ivec2 &size, const bool &leftright) const;
 	bool collisionMoveUp(const glm::ivec2 &pos, const glm::ivec2 &size, const bool &leftright) const;
 
 	glm::ivec2 getnXnY();
@@ -52,7 +51,7 @@ public:
 
 private:
 	bool loadLevel(const string &levelFile, const glm::ivec2 &posM);
-	void cargamapa(const glm::ivec2 &posM);
+	void loadScreen(const glm::ivec2 &posM);
 	void prepareArrayBack(ShaderProgram &program);
 	void prepareArrayFront(ShaderProgram &program);
 	
@@ -61,7 +60,7 @@ private:
 	GLuint vao, vao2, vao3;
 	GLuint vbo;
 	GLint posLocation, texCoordLocation;
-	glm::ivec2 position, mapSize, tilesheetSize;
+	glm::ivec2 position, screenSize, tilesheetSize;
 	glm::ivec2 tileSize, blockSize;
 	Texture tilesheet;
 	ShaderProgram shaderProgram;

@@ -30,20 +30,24 @@ public:
 	Scene();
 	~Scene();
 
-	void init(bool lvl);
-	void init2(int mov, int tp);
+	
+	void init(bool lvl);  //init is called only one time per level
+	void init_screen(int mov, int tp);//when you pass throught different screens in the same lvl init2 is called
+
 	void update(int deltaTime);
 	void render();
 
-	void ini_teleport();
-	void teleport(glm::ivec2 posT);
+	void init_teleport(); //init position of tp
+	void teleport(glm::ivec2 posT);//TeleportPlayer
 
-	void drawSoldiers();
-	void drawBoss();
-	void drawTorchs();
-	void drawDoors();
-	void drawTraps();
-	void drawLands();
+
+	//Init objects traps and enemys, called every screen.
+	void init_soldiers();
+	void init_boss();
+	void init_torchs();
+	void init_doors();
+	void init_traps();
+	void init_lands();
 
 
 private:
@@ -51,39 +55,44 @@ private:
 
 private:
 	TileMap *map;
-	VidaPlayer *vidap;
-	VidaSoldier *vidas;
-	VidaBoss *vidab;
+	ShaderProgram texProgram;
+	float currentTime;
+	glm::mat4 projection;
+	glm::ivec2 posM;
+	bool nivell;
+
+	bool torchs, doors, traps, lands, puls;
+	bool *lands2;
+	int *cont;
 	vector<Torch> torchsvec;
 	vector<Door> doorsvec;
 	vector<Trap> trapsvec;
 	vector<Land> landsvec;
 	vector<Soldier*> soldiersvec;
+
 	glm::ivec2 *aptp;
 	glm::ivec2 *amtp;
 	glm::ivec2 *rptp;
 	glm::ivec2 *rmtp;
-	ShaderProgram texProgram;
-	float currentTime;
-	glm::mat4 projection;
-	glm::ivec2 posM, posMaux;
-	glm::vec2 *posSoldier;
-	glm::ivec2 posMapBoss;
-	glm::vec2 posTileBoss;
-	bool dirBoss;
-	bool *dirSoldier;
-	bool torchs, doors, traps, lands, bboss;
-	bool *soldiers;
-	bool nivell;
-	bool bossdead;
-	int vidaPlay, vidaSold, vidaBoss;
-	bool *lands2;
+
 	Player *player;
 	Boss *boss;
+
+	int *soldiers;
+	glm::ivec2 *posSoldierScreen;
+	bool *dirSoldier;
+
+	glm::ivec2 posMapBoss;
+	glm::vec2 posTileBoss;
+	bool dirBoss, bossdead, bboss;
+
+	int vidaPlay, vidaSold, vidaBoss;
+	VidaPlayer *vidap;
+	VidaSoldier *vidas;
+	VidaBoss *vidab;
+
 	gameover *go;
 	levelcompleted *lc;
-	bool puls;
-	int *cont;
 	int contGAMEOVER;
 	bool LEVELCOMPLETED;
 };

@@ -25,7 +25,7 @@ Scene::Scene()
 	amtp = NULL;
 	rptp = NULL;
 	rmtp = NULL;
-	posSoldier = NULL;
+	posSoldierScreen = NULL;
 	dirSoldier = NULL;
 	soldiers = NULL;
 	lands2 = NULL;
@@ -56,8 +56,8 @@ Scene::~Scene()
 		delete rptp;
 	if (rmtp != NULL)
 		delete rmtp;
-	if (posSoldier != NULL)
-		delete posSoldier;
+	if (posSoldierScreen != NULL)
+		delete posSoldierScreen;
 	if (dirSoldier != NULL)
 		delete dirSoldier;
 	if (soldiers != NULL)
@@ -74,31 +74,38 @@ void Scene::init(bool lvl)
 {
 	posM.x = 0;
 	posM.y = 0;
-	nivell = lvl; // lvl true nivell 1 // lvl false nivell 2
-	ini_teleport();
-	puls = false;
+	nivell = lvl; 
+	init_teleport();
 	initShaders();
+
 	if (nivell){
 		map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM);
 	}
 	else{
-		map = TileMap::createTileMap("levels/level02.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM); //CAMBIAR MAPA
+		map = TileMap::createTileMap("levels/level02.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM);
 	}
+
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize().x, (INIT_PLAYER_Y_TILES * map->getTileSize().y) + 2));
 	player->setTileMap(map);
+
 	vidap = new VidaPlayer();
 	vidap->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	vidap->setPosition(glm::vec2(30, 252));
+
 	vidas = new VidaSoldier();
 	vidas->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	vidas->setPosition(glm::vec2(30, 252));
+
 	vidab = new VidaBoss();
 	vidab->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	vidab->setPosition(glm::vec2(30, 252));
+
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
+
+	puls = false;
 	bossdead = false;
 	torchs = false;
 	doors = false;
@@ -111,17 +118,18 @@ void Scene::init(bool lvl)
 	trapsvec.clear();
 	landsvec.clear();
 
-	drawSoldiers();
-	drawBoss();
-	drawTorchs();
-	drawDoors();
-	drawTraps();
-	drawLands();
+	init_soldiers();
+	init_boss();
+	init_torchs();
+	init_doors();
+	init_traps();
+	init_lands();
+
 	contGAMEOVER = 100;
 	LEVELCOMPLETED = false;
 }
 
-void Scene::init2(int mov, int tp)  //mov=1 dreta, mov=2 esquerra, mov=3 abaix, mov=4 adalt
+void Scene::init_screen(int mov, int tp)  //mov=1 right, mov=2 left, mov=3 down, mov=4 up
 {
 	glm::vec2 p = player->getPosition();
 	float x = p.x;
@@ -153,18 +161,21 @@ void Scene::init2(int mov, int tp)  //mov=1 dreta, mov=2 esquerra, mov=3 abaix, 
 		y = (float) rptp[tp].y * map->getTileSize().y+2;
 	}
 	
-	map->prepareMap(texProgram, posM);
+	map->prepareScreen(texProgram, posM);
+
 	player->setPosition(glm::vec2(x, y)); 
 	player->setTileMap(map);
+
 	torchsvec.clear();
 	doorsvec.clear();
 	trapsvec.clear();
 	landsvec.clear();
-	drawBoss();
-	drawTorchs();
-	drawDoors();
-	drawTraps();
-	drawLands();
+
+	init_boss();
+	init_torchs();
+	init_doors();
+	init_traps();
+	init_lands();
 }
 
 void Scene::update(int deltaTime)
@@ -172,20 +183,25 @@ void Scene::update(int deltaTime)
 
 	currentTime += deltaTime;
 	player->update(deltaTime, posM);
+
 	glm::vec2 p = player->getPosition();
 	glm::ivec2 pt = player->getPositionTile();
 	glm::ivec2 ps = glm::ivec2(0, 0);
 	int a = player->getCurrentAnim();
 	int k = player->getCurrentKeyframe(a);
 	int v = player->getVida();
-	if (soldiers[posM.y * map->getnXnY().x + posM.x]){
-		soldiersvec[posM.y * map->getnXnY().x + posM.x]->update(deltaTime, p, a, k,v);
-		glm::vec2 pp = soldiersvec[posM.y * map->getnXnY().x + posM.x]->getPosition();
-		ps = soldiersvec[posM.y * map->getnXnY().x + posM.x]->getPositionTile();
-		int aa = soldiersvec[posM.y * map->getnXnY().x + posM.x]->getCurrentAnim();
-		int kk = soldiersvec[posM.y * map->getnXnY().x + posM.x]->getCurrentKeyframe(aa);
+
+	//if soldier in the screen, here we do the interaction
+	if (soldiers[posM.y * map->getnXnY().x + posM.x] != -1){
+		soldiersvec[soldiers[posM.y * map->getnXnY().x + posM.x]]->update(deltaTime, p, a, k, v);
+		glm::vec2 pp = soldiersvec[soldiers[posM.y * map->getnXnY().x + posM.x]]->getPosition();
+		ps = soldiersvec[soldiers[posM.y * map->getnXnY().x + posM.x]]->getPositionTile();
+		int aa = soldiersvec[soldiers[posM.y * map->getnXnY().x + posM.x]]->getCurrentAnim();
+		int kk = soldiersvec[soldiers[posM.y * map->getnXnY().x + posM.x]]->getCurrentKeyframe(aa);
 		player->update(deltaTime, pp, aa, kk,false);
 	}
+
+	//if boss in the screen, interaction with player
 	if (bboss){
 		boss->update(deltaTime, p, a, k, v);
 		glm::vec2 pp = boss->getPosition();
@@ -195,27 +211,30 @@ void Scene::update(int deltaTime)
 		player->update(deltaTime, pp, aa, kk,true);
 	}
 	
+	//If torch in the screen, do the animation
 	if (torchs){
 		for (int i = 0; i < torchsvec.size(); i++)
 			torchsvec[i].update(deltaTime);
 	}
+
+	//If player syay on heal -- heal interaction
+	if (map->getTile(pt) == 12 && !player->saltando()) {
+		map->changeTile(texProgram, pt, posM,4);
+		player->update(deltaTime, 1);
+	}
+
+	if (map->getTile(pt) == 37 && !player->saltando()) {
+		teleport(pt);
+	}
+
+	//Open the door if player stay on the button
 	if (map->getTile(pt) == 13) {
 		map->prepareArrayTile(texProgram, pt, 36);
 		puls = true;
 	}
 	else puls = false;
 
-
-	if (map->getTile(pt) == 12 && !player->saltando()) {
-		map->changeTile(texProgram, pt, posM,4);
-		player->update(deltaTime, 1);
-	}
-	if (map->getTile(pt) == 37 && !player->saltando()) {
-		teleport(pt);
-	}
-
 	if (doors){
-
 		if (map->getTile(pt) == 13){
 			for (int i = 0; i < doorsvec.size(); i++){
 				doorsvec[i].update(deltaTime, true);
@@ -228,6 +247,8 @@ void Scene::update(int deltaTime)
 				doorsvec[i].update(deltaTime, false);
 		}
 	}
+
+	//if traps in the screen, traps animation and interaction with player and soldier
 	if (traps){
 		for (int i = 0; i < trapsvec.size(); i++){
 			trapsvec[i].update(deltaTime);
@@ -235,9 +256,11 @@ void Scene::update(int deltaTime)
 			int aa = trapsvec[i].getCurrentAnim();
 			int kk = trapsvec[i].getCurrentKeyframe(aa);
 			player->update(deltaTime, pp, aa, kk);
-			if (soldiers[posM.y * map->getnXnY().x + posM.x]) soldiersvec[posM.y * map->getnXnY().x + posM.x]->update(deltaTime,pp,aa,kk);
+			if (soldiers[posM.y * map->getnXnY().x + posM.x] != -1) soldiersvec[soldiers[posM.y * map->getnXnY().x + posM.x]]->update(deltaTime, pp, aa, kk);
 		}
 	}
+
+	//if lands in the scree, lands animation and interaction with player
 	if (lands){
 		for (int i = 0; i < landsvec.size(); i++){
 			if (lands2[i]){
@@ -257,6 +280,8 @@ void Scene::update(int deltaTime)
 			}
 		}
 	}
+
+	//Vida player and die if it is 0 --- GAME OVER
 	vidaPlay = player->getVida();
 	if (vidaPlay <= 0){
 		vidaPlay = 0;
@@ -273,12 +298,14 @@ void Scene::update(int deltaTime)
 		go->update(deltaTime, nivell);
 	}
 
-	if (soldiers[posM.y * map->getnXnY().x + posM.x]){
-		vidaSold = soldiersvec[posM.y * map->getnXnY().x + posM.x]->getVida();
+	//Update vida soldier
+	if (soldiers[posM.y * map->getnXnY().x + posM.x] != -1){
+		vidaSold = soldiersvec[soldiers[posM.y * map->getnXnY().x + posM.x]]->getVida();
 		if (vidaSold < 0) vidaSold = 0;
 		vidas->update(deltaTime, vidaSold);
 	}
 
+	//Update vida boss
 	if (bboss){
 		vidaBoss = boss->getVida();
 		if (vidaBoss <= 0) {
@@ -287,14 +314,15 @@ void Scene::update(int deltaTime)
 		vidab->update(deltaTime, boss->getVida());
 		if (boss->getVida() == 0){
 			bossdead = true;
-			if (nivell) map->changeTile(texProgram, glm::ivec2(8, 3), posM, 42); //CUANDO MATAS AL BOSS APARECE EL TP VERDE
+			if (nivell) map->changeTile(texProgram, glm::ivec2(8, 3), posM, 42); //When you kill boss, new green tp appear.
 			else map->changeTile(texProgram, glm::ivec2(8, 3), posM, 42);
 		}
 	}
 
+	//How to end the level
 	if (nivell){
 		if (posM.x == 4 && posM.y == 2){
-			if (player->getPositionTile().x == 8 && player->getPositionTile().y == 3){ //CUANDO PISAS EL TP VERDE LEVEL-COMPLETED!!! i MENU PRINCI^PAL AGAIN
+			if (player->getPositionTile().x == 8 && player->getPositionTile().y == 3){ // If you use green tp you go back main menu.
 				if (bossdead){
 					lc = new levelcompleted();
 					lc->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -319,15 +347,18 @@ void Scene::update(int deltaTime)
 
 	if (LEVELCOMPLETED) lc->update(deltaTime, nivell);
 
-	if (p.x > 294) init2(1, 0);           
-	else if (p.x < -30) init2(2, 0);
-	else if (p.y > 160) init2(3, 0);
-	else if (p.y < -52) init2(4, 0);
+	//When lvl goes out limits of the screen, we put him another one
+	if (p.x > 294) init_screen(1, 0);           
+	else if (p.x < -30) init_screen(2, 0);
+	else if (p.y > 160) init_screen(3, 0);
+	else if (p.y < -52) init_screen(4, 0);
 }
 
 void Scene::render()
 {
 	glm::mat4 modelview;
+
+	//Render every object if it has to.
 
 	texProgram.use();
 	texProgram.setUniformMatrix4f("projection", projection);
@@ -353,7 +384,7 @@ void Scene::render()
 			landsvec[i].render();
 	}
 
-	if (soldiers[posM.y * map->getnXnY().x + posM.x]) soldiersvec[posM.y * map->getnXnY().x + posM.x]->render();
+	if (soldiers[posM.y * map->getnXnY().x + posM.x] != -1) soldiersvec[soldiers[posM.y * map->getnXnY().x + posM.x]]->render();
 	if (bboss) boss->render();
 
 	if (traps){
@@ -371,7 +402,7 @@ void Scene::render()
 		}
 	}
 	vidap->render();
-	if (soldiers[posM.y * map->getnXnY().x + posM.x] && soldiersvec[posM.y * map->getnXnY().x + posM.x]->getVida() > 0) vidas->render();
+	if (soldiers[posM.y * map->getnXnY().x + posM.x] != -1 && soldiersvec[soldiers[posM.y * map->getnXnY().x + posM.x]]->getVida() > 0) vidas->render();
 	if (boss && boss->getVida() > 0) vidab->render();
 	
 	map->render_front(texProgram);
@@ -419,18 +450,8 @@ void Scene::initShaders()
 	fShader.free();
 }
 
-void Scene::ini_teleport() {
-	if (nivell){						//DECIDIR TP LVL 1
-		aptp = new glm::ivec2[8];
-		aptp[0].x = 7; aptp[0].y = 3;
-		aptp[1].x = 5; aptp[1].y = 1;
-		aptp[2].x = 8; aptp[2].y = 1;
-		aptp[3].x = 4; aptp[3].y = 1;
-		aptp[4].x = 7; aptp[4].y = 1;
-		aptp[5].x = 9; aptp[5].y = 2;
-		aptp[6].x = 4; aptp[6].y = 3;
-		aptp[7].x = 9; aptp[7].y = 3;
-
+void Scene::init_teleport() {
+	if (nivell){						//CHOOSE TP LVL 1
 
 		amtp = new glm::ivec2[8];
 		amtp[0].x = 1; amtp[0].y = 0;
@@ -443,15 +464,15 @@ void Scene::ini_teleport() {
 		amtp[7].x = 4; amtp[7].y = 1;
 
 
-		rptp = new glm::ivec2[8];
-		rptp[0].x = 1; rptp[0].y = 1;
-		rptp[1].x = 3; rptp[1].y = 3;
-		rptp[2].x = 1; rptp[2].y = 3;
-		rptp[3].x = 6; rptp[3].y = 3;
-		rptp[4].x = 1; rptp[4].y = 2;
-		rptp[5].x = 7; rptp[5].y = 3;
-		rptp[6].x = 9; rptp[6].y = 1;
-		rptp[7].x = 1; rptp[7].y = 3;
+		aptp = new glm::ivec2[8];		//size of aptp = amtp = rptp = rmtp = Number of teleports
+		aptp[0].x = 7; aptp[0].y = 3;   //aptp -- choose tp blue position inside screen.
+		aptp[1].x = 5; aptp[1].y = 1;   //amtp -- choose which screen
+		aptp[2].x = 8; aptp[2].y = 1;   //rptp -- choose tp red position inside map screen.
+		aptp[3].x = 4; aptp[3].y = 1;   //rmtp -- choose which screen  
+		aptp[4].x = 7; aptp[4].y = 1;   //So in lvl 1 we have 8 teleport (8 blue that teleport you to 8 red) 
+		aptp[5].x = 9; aptp[5].y = 2;   //Example: for tp 0
+		aptp[6].x = 4; aptp[6].y = 3;   //tp 0 blue is in screen[1,0] position[7,3]
+		aptp[7].x = 9; aptp[7].y = 3;   //tp 0 red is in screen[0,1] position[1,1]
 
 
 		rmtp = new glm::ivec2[8];
@@ -463,17 +484,21 @@ void Scene::ini_teleport() {
 		rmtp[5].x = 2; rmtp[5].y = 5;
 		rmtp[6].x = 4; rmtp[6].y = 0;
 		rmtp[7].x = 4; rmtp[7].y = 2;
+
+		rptp = new glm::ivec2[8];
+		rptp[0].x = 1; rptp[0].y = 1;
+		rptp[1].x = 3; rptp[1].y = 3;
+		rptp[2].x = 1; rptp[2].y = 3;
+		rptp[3].x = 6; rptp[3].y = 3;
+		rptp[4].x = 1; rptp[4].y = 2;
+		rptp[5].x = 7; rptp[5].y = 3;
+		rptp[6].x = 9; rptp[6].y = 1;
+		rptp[7].x = 1; rptp[7].y = 3;
+
+
 	}
 	else {								//DECIDIR TP LVL2
-		aptp = new glm::ivec2[6];
-		aptp[0].x = 7; aptp[0].y = 1;
-		aptp[1].x = 8; aptp[1].y = 3;
-		aptp[2].x = 6; aptp[2].y = 1;
-		aptp[3].x = 9; aptp[3].y = 1;
-		aptp[4].x = 7; aptp[4].y = 1; 
-		aptp[5].x = 2; aptp[5].y = 3;
-
-
+		
 		amtp = new glm::ivec2[6];
 		amtp[0].x = 2; amtp[0].y = 0;
 		amtp[1].x = 0; amtp[1].y = 3;
@@ -482,6 +507,21 @@ void Scene::ini_teleport() {
 		amtp[4].x = 4; amtp[4].y = 0;
 		amtp[5].x = 3; amtp[5].y = 2;
 
+		aptp = new glm::ivec2[6];
+		aptp[0].x = 7; aptp[0].y = 1;
+		aptp[1].x = 8; aptp[1].y = 3;
+		aptp[2].x = 6; aptp[2].y = 1;
+		aptp[3].x = 9; aptp[3].y = 1;
+		aptp[4].x = 7; aptp[4].y = 1; 
+		aptp[5].x = 2; aptp[5].y = 3;
+
+		rmtp = new glm::ivec2[6];
+		rmtp[0].x = 0; rmtp[0].y = 2;
+		rmtp[1].x = 3; rmtp[1].y = 0;
+		rmtp[2].x = 3; rmtp[2].y = 1;
+		rmtp[3].x = 3; rmtp[3].y = 1;
+		rmtp[4].x = 1; rmtp[4].y = 2;
+		rmtp[5].x = 3; rmtp[5].y = 1;
 
 		rptp = new glm::ivec2[6];
 		rptp[0].x = 1; rptp[0].y = 1;
@@ -491,14 +531,6 @@ void Scene::ini_teleport() {
 		rptp[4].x = 2; rptp[4].y = 1;
 		rptp[5].x = 2; rptp[5].y = 1;
 
-
-		rmtp = new glm::ivec2[6];
-		rmtp[0].x = 0; rmtp[0].y = 2;
-		rmtp[1].x = 3; rmtp[1].y = 0;
-		rmtp[2].x = 3; rmtp[2].y = 1;
-		rmtp[3].x = 3; rmtp[3].y = 1;
-		rmtp[4].x = 1; rmtp[4].y = 2;
-		rmtp[5].x = 3; rmtp[5].y = 1;
 	}
 }
 
@@ -520,102 +552,123 @@ void Scene::teleport(glm::ivec2 posT) {
 	}
 	posM.x = rmtp[tp].x;
 	posM.y = rmtp[tp].y;
-	init2(0, tp);
+	init_screen(0, tp);
 }
 
 
-void Scene::drawSoldiers(){
-	posSoldier = new glm::vec2[map->getnXnY().x * map->getnXnY().y];
-	dirSoldier = new bool[map->getnXnY().x * map->getnXnY().y];
-	soldiers = new bool[map->getnXnY().x * map->getnXnY().y];
+void Scene::init_soldiers(){
+	soldiers = new int[map->getnXnY().x * map->getnXnY().y];
 	for (int i = 0; i < map->getnXnY().x * map->getnXnY().y; i++){
-		posSoldier[i].x = -1;
-		posSoldier[i].y = -1;
-		soldiers[i] = false;
+		soldiers[i] = -1;
 	}
-	if (nivell){				//ENEMYS LEVEL 1
-		posSoldier[4].x = 6;
-		posSoldier[4].y = 1;
-		dirSoldier[4] = true;
+	
+	if (nivell){
+		posSoldierScreen = new glm::ivec2[8];
+		dirSoldier = new bool[8];
+		
+		//Select screen like tp. But here we do j * mapsize.x + i. 
+		//Soldier 0 is in screen (4,0) at position (6,1) looking left;
+		posSoldierScreen[0].x = 6;
+		posSoldierScreen[0].y = 1;
+		dirSoldier[0] = true;
+		soldiers[4] = 0; 
+				
+		posSoldierScreen[1].x = 6;
+		posSoldierScreen[1].y = 2;
+		dirSoldier[1] = false;
+		soldiers[6] = 1;
 
-		posSoldier[6].x = 6;
-		posSoldier[6].y = 2;
-		dirSoldier[6] = false;
+		posSoldierScreen[2].x = 6;
+		posSoldierScreen[2].y = 3;
+		dirSoldier[2] = true;
+		soldiers[16] = 2;
 
-		posSoldier[16].x = 6;
-		posSoldier[16].y = 3;
-		dirSoldier[16] = true;
+		posSoldierScreen[3].x = 2;
+		posSoldierScreen[3].y = 1;
+		dirSoldier[3] = false;
+		soldiers[12] = 3;
 
-		posSoldier[12].x = 2;
-		posSoldier[12].y = 1;
-		dirSoldier[12] = false;
+		posSoldierScreen[4].x = 4;
+		posSoldierScreen[4].y = 3;
+		dirSoldier[4] = false;
+		soldiers[26] = 4;
 
-		posSoldier[22].x = 5;
-		posSoldier[22].y = 3;
-		dirSoldier[22] = false;
-
-		posSoldier[26].x = 4;
-		posSoldier[26].y = 3;
-		dirSoldier[26] = false;
-
-		posSoldier[27].x = 5;
-		posSoldier[27].y = 2;
-		dirSoldier[27] = false;
-
-		posSoldier[9].x = 6;
-		posSoldier[9].y = 3;
-		dirSoldier[9] = false;
-
-	}
-	else{
-		posSoldier[6].x = 5;
-		posSoldier[6].y = 3;
-		dirSoldier[6] = true;
-
-		posSoldier[5].x = 6;
-		posSoldier[5].y = 3;
+		posSoldierScreen[5].x = 5;
+		posSoldierScreen[5].y = 3;
 		dirSoldier[5] = false;
+		soldiers[22] = 5;
 
-		posSoldier[15].x = 5;
-		posSoldier[15].y = 3;
-		dirSoldier[15] = true;
+		posSoldierScreen[6].x = 5;
+		posSoldierScreen[6].y = 2;
+		dirSoldier[6] = true;
+		soldiers[27] = 6;
 
-		posSoldier[4].x = 3;
-		posSoldier[4].y = 1;
-		dirSoldier[4] = true;
+		posSoldierScreen[7].x = 6;
+		posSoldierScreen[7].y = 3;
+		dirSoldier[9] = true;
+		soldiers[9] = 7;
 
-		posSoldier[12].x = 4;
-		posSoldier[12].y = 2;
-		dirSoldier[12] = true;
-
-		posSoldier[16].x = 5;
-		posSoldier[16].y = 1;
-		dirSoldier[16] = true;
-
-		posSoldier[17].x = 3;
-		posSoldier[17].y = 1;
-		dirSoldier[17] = true;
-								//ENEMYS LEVEL2
-	}
-
-	for (int i = 0; i < map->getnXnY().x * map->getnXnY().y; i++){
-		if (posSoldier[i].x != -1){
+		
+		for (int i = 0; i < 8; i++){
 			Soldier *soldier = new Soldier();
-			soldier->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram,dirSoldier[i]);
-			soldier->setPosition(glm::vec2(posSoldier[i].x*map->getTileSize().x, posSoldier[i].y*map->getTileSize().y + 2));
+			soldier->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, dirSoldier[i]);
+			soldier->setPosition(glm::vec2(posSoldierScreen[i].x * map->getTileSize().x , posSoldierScreen[i].y*map->getTileSize().y + 2));
 			soldier->setTileMap(map);
 			soldiersvec.push_back(soldier);
-			soldiers[i] = true;
 		}
-		 else {
-			 Soldier *soldier = new Soldier();
+	}
+	else{
+
+		posSoldierScreen = new glm::ivec2[7];
+		dirSoldier = new bool[7];
+
+		posSoldierScreen[0].x = 5;
+		posSoldierScreen[0].y = 3;
+		dirSoldier[0] = true;
+		soldiers[6] = 0;
+
+		posSoldierScreen[1].x = 6;
+		posSoldierScreen[1].y = 3;
+		dirSoldier[1] = false;
+		soldiers[5] = 1;
+
+		posSoldierScreen[2].x = 5;
+		posSoldierScreen[2].y = 3;
+		dirSoldier[2] = true;
+		soldiers[15] = 2;
+
+		posSoldierScreen[3].x = 3;
+		posSoldierScreen[3].y = 1;
+		dirSoldier[3] = true;
+		soldiers[4] = 3;
+
+		posSoldierScreen[4].x = 4;
+		posSoldierScreen[4].y = 2;
+		dirSoldier[4] = true;
+		soldiers[12] = 4;
+
+		posSoldierScreen[5].x = 5;
+		posSoldierScreen[5].y = 1;
+		dirSoldier[5] = true;
+		soldiers[16] = 5;
+
+		posSoldierScreen[6].x = 3;
+		posSoldierScreen[6].y = 1;
+		dirSoldier[6] = true;
+		soldiers[17] = 6;
+
+		for (int i = 0; i < 7; i++){
+			Soldier *soldier = new Soldier();
+			soldier->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, dirSoldier[i]);
+			soldier->setPosition(glm::vec2(posSoldierScreen[i].x * map->getTileSize().x , posSoldierScreen[i].y*map->getTileSize().y + 2));
+			soldier->setTileMap(map);
 			soldiersvec.push_back(soldier);
-			soldiers[i] = false;
 		}
+
 	}
 }
 
-void Scene::drawBoss(){
+void Scene::init_boss(){
 
 	posMapBoss.x = -1;
 	posMapBoss.y = -1;
@@ -647,7 +700,9 @@ void Scene::drawBoss(){
 	else bboss = false;
 }
 
-void Scene::drawTorchs(){
+//Objects init values are read from the lvl.txt file
+
+void Scene::init_torchs(){
 	vector<glm::ivec2> torchspos = map->getTorchsPos();
 	for (int i = 0; i < torchspos.size(); i ++){
 		Torch *torch = new Torch();
@@ -659,7 +714,7 @@ void Scene::drawTorchs(){
 	else torchs = false;
 }
 
-void Scene::drawDoors(){
+void Scene::init_doors(){
 	vector<glm::ivec2> doorspos = map->getDoorsPos();
 	for (int i = 0; i < doorspos.size(); i++){
 		Door *door = new Door();
@@ -671,7 +726,7 @@ void Scene::drawDoors(){
 	else doors = false;
 }
 
-void Scene::drawTraps(){
+void Scene::init_traps(){
 	vector<glm::ivec2> trapspos = map->getTrapsPos();
 	for (int i = 0; i < trapspos.size(); i++){
 		Trap *trap = new Trap();
@@ -683,7 +738,7 @@ void Scene::drawTraps(){
 	else traps = false;
 }
 
-void Scene::drawLands(){
+void Scene::init_lands(){
 	vector<glm::ivec2> landspos = map->getLandsPos();
 	lands2 = new bool[landspos.size()];
 	cont = new int[landspos.size()];

@@ -5,7 +5,6 @@
 #include "TileMap.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-//nou
 using namespace std;
 
 TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM)
@@ -18,12 +17,12 @@ TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoo
 
 TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, const glm::vec2 &posM)
 {
-	loadLevel(levelFile, posM);//cambiar con la posicion del mapa a pintar!
-	cargamapa(posM);
+	loadLevel(levelFile, posM);
+	loadScreen(posM);
 	shaderProgram = program;
 	minCoord = minCoords;
 	prepareArrayBack(program);
-	prepareArrayFront(program); //cambiado
+	prepareArrayFront(program);
 
 }
 
@@ -33,8 +32,8 @@ TileMap::~TileMap()
 		delete map;
 }
 
-void TileMap::prepareMap(ShaderProgram &program, const glm::vec2 &posM) {
-	cargamapa(posM);
+void TileMap::prepareScreen(ShaderProgram &program, const glm::vec2 &posM) {
+	loadScreen(posM);
 	shaderProgram = program;
 	prepareArrayBack(program);
 	prepareArrayFront(program);
@@ -47,7 +46,7 @@ void TileMap::render_back(ShaderProgram &texProgram)
 	glBindVertexArray(vao);
 	glEnableVertexAttribArray(posLocation);
 	glEnableVertexAttribArray(texCoordLocation);
-	glDrawArrays(GL_TRIANGLES, 0, 6 * mapSize.x * mapSize.y);
+	glDrawArrays(GL_TRIANGLES, 0, 6 * screenSize.x * screenSize.y);
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -64,7 +63,7 @@ void TileMap::render_front(ShaderProgram &texProgram){
 	glBindVertexArray(vao2);
 	glEnableVertexAttribArray(posLocation);
 	glEnableVertexAttribArray(texCoordLocation);
-	glDrawArrays(GL_TRIANGLES, 0, 6 * ntilesFront); //cambiado
+	glDrawArrays(GL_TRIANGLES, 0, 6 * ntilesFront);
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -103,7 +102,7 @@ bool TileMap::loadLevel(const string &levelFile, const glm::ivec2 &posM)
 		return false;
 	getline(fin, line);
 	sstream.str(line);
-	sstream >> mapSize.x >> mapSize.y;
+	sstream >> screenSize.x >> screenSize.y;
 	getline(fin, line);
 	sstream.str(line);
 	sstream >> nX >> nY;
@@ -126,10 +125,10 @@ bool TileMap::loadLevel(const string &levelFile, const glm::ivec2 &posM)
 	sstream >> tilesheetSize.x >> tilesheetSize.y;
 	
 	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
-	mapAX = (mapSize.x + (10 * (nX - 1))); //21
-	mapAY = (mapSize.y + (3 * (nY - 1))); //7
+	mapAX = (screenSize.x + (10 * (nX - 1))); //21
+	mapAY = (screenSize.y + (3 * (nY - 1))); //7
 	mapA = new int[mapAX * mapAY]; // 21 * 7
-	map = new int[mapSize.x * mapSize.y];
+	map = new int[screenSize.x * screenSize.y];
 	for (int j = 0; j<mapAY; j++)
 	{
 		for (int i = 0; i < mapAX; i++)
@@ -151,15 +150,13 @@ bool TileMap::loadLevel(const string &levelFile, const glm::ivec2 &posM)
 	return true;
 }
 
-void TileMap::cargamapa(const glm::ivec2 &posM)
+void TileMap::loadScreen(const glm::ivec2 &posM)
 {
-	    //A PARTIR DE AQUI LO METERMOS EN OTRA FUNCION PARA QUE NO 
-	for (int j = 0; j < mapSize.y; j++)		 //LEA EL BLOC DE NOTAS MIL VECES!!!! TENDREMOS QUE DECLARAR mapA EN EL .h !!!
+	for (int j = 0; j < screenSize.y; j++)		
 	{
-		for (int i = 0; i < mapSize.x; i++)
+		for (int i = 0; i < screenSize.x; i++)
 		{
-			map[j*mapSize.x + i] = mapA[((j + (3 * (posM.y)))*mapAX) + (i + (10 * (posM.x)))];
-			//map[j*mapSize.x + i] = mapA[((j+3)*mapAX) + i];
+			map[j*screenSize.x + i] = mapA[((j + (3 * (posM.y)))*mapAX) + (i + (10 * (posM.x)))];
 		}
 	}
 
@@ -171,11 +168,11 @@ void TileMap::prepareArrayBack(ShaderProgram &program)
 	glm::vec2 posTile, texCoordTile[2];
 	vector<float> vertices;
 	
-	for (int j = mapSize.y-1; j>=0; j--)
+	for (int j = screenSize.y-1; j>=0; j--)
 	{
-		for(int i=0; i<mapSize.x; i++)
+		for(int i=0; i<screenSize.x; i++)
 		{
-			tile = map[j * mapSize.x + i];
+			tile = map[j * screenSize.x + i];
 			if(tile != 0)
 			{
 				// Non-empty tile
@@ -221,9 +218,9 @@ void TileMap::prepareArrayFront(ShaderProgram &program){
 	int tile;
 	bool pintar = false;
 
-	for (int j = mapSize.y - 1; j >= 0; j--) {
-		for (int i = 0; i < mapSize.x; i++) {
-			tile = map[j * mapSize.x + i];
+	for (int j = screenSize.y - 1; j >= 0; j--) {
+		for (int i = 0; i < screenSize.x; i++) {
+			tile = map[j * screenSize.x + i];
 			if (tile == 3 || tile == 17 || tile == 25) { //tile columna
 				tile = 28;
 				pintar = true;
@@ -240,7 +237,7 @@ void TileMap::prepareArrayFront(ShaderProgram &program){
 				pintar = true;
 				tile = 39;
 			}
-			else if (tile >= 1 && tile < 26 && map[j * mapSize.x + i - 1] == 27 && tile != 13 && tile != 20 && tile != 11 && tile != 18 && tile != 23) {
+			else if (tile >= 1 && tile < 26 && map[j * screenSize.x + i - 1] == 27 && tile != 13 && tile != 20 && tile != 11 && tile != 18 && tile != 23) {
 				pintar = true; //ir con cuidado de no salirsa de la matriz!
 				tile = 40;
 			}
@@ -317,7 +314,7 @@ void TileMap::prepareArrayTile(ShaderProgram &program, glm::ivec2 posT, int t){
 
 void TileMap::changeTile(ShaderProgram &program, const glm::ivec2 posT, const glm::ivec2 posM, int tile) {
 	mapA[((posT.y + (3 * (posM.y)))*mapAX) + (posT.x + (10 * (posM.x)))] = tile;
-	map[posT.y*mapSize.x + posT.x] = tile;
+	map[posT.y*screenSize.x + posT.x] = tile;
 	prepareArrayBack(program);
 }
 
@@ -331,10 +328,10 @@ bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) c
 	int x = (pos.x + size.x/4 -5) / tileSize.x;
 	int y = (pos.y + 10)/ tileSize.y;
 
-	if (map[y*mapSize.x + x] == 11 || map[y*mapSize.x + x] == 18 || map[y*mapSize.x + x] == 23) return true;
+	if (map[y*screenSize.x + x] == 11 || map[y*screenSize.x + x] == 18 || map[y*screenSize.x + x] == 23) return true;
 	else {
 		for (int i = 29; i < 34; i++){
-			if (map[y*mapSize.x + x] == i) return true;
+			if (map[y*screenSize.x + x] == i) return true;
 		}
 	}
 	return false;
@@ -346,10 +343,10 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 	int x = (pos.x + size.x/4 +10)/ tileSize.x;
 	int y = (pos.y + 10)/ tileSize.y;
 
-	if (map[y*mapSize.x + x] == 11 || map[y*mapSize.x + x] == 18 || map[y*mapSize.x + x] == 23) return true;
+	if (map[y*screenSize.x + x] == 11 || map[y*screenSize.x + x] == 18 || map[y*screenSize.x + x] == 23) return true;
 	else {
 		for (int i = 29; i < 34; i++){
-			if (map[y*mapSize.x + x] == i) return true;
+			if (map[y*screenSize.x + x] == i) return true;
 		}
 	}
 	return false;
@@ -361,33 +358,12 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	int x = (pos.x + size.x/4)/ tileSize.x;
 	int y = (pos.y)/ tileSize.y;
 
-	if (map[y * mapSize.x + x] != 27){
+	if (map[y * screenSize.x + x] != 27){
 		if (pos.y >= tileSize.y * y){
 			*posY = y*tileSize.y + 2;
 			return true;
 		}
 	}
-	return false;
-}
-
-bool TileMap::collisionMoveDown2(const glm::ivec2 &pos, const glm::ivec2 &size, const bool &leftright) const {
-
-	int x = (pos.x + 32) / tileSize.x;
-	int x0 = (pos.x + size.x / 4 + 10) / tileSize.x;
-	int x1 = (pos.x + size.x / 4 - 10) / tileSize.x;
-	int y = (pos.y + 32) / tileSize.y;
-
-	if (leftright){
-		if (map[y * mapSize.x + x - 1] == 27){
-			if(float(pos.x + size.x / 4 + 10) - float((x0)*tileSize.x) <= 20) return false; //Cambiar a true si es vol implementar el descend
-		}
-	}
-	else {
-		if (map[y * mapSize.x + x1 + 1] == 27){
-			if (float((x1+1)*tileSize.x) - float(pos.x + size.x/4 - 10) <= 20)  return false;//Cambiar a true si es vol implementar el descend
-		}
-	}
-
 	return false;
 }
 
@@ -397,18 +373,18 @@ bool TileMap::collisionMoveUp(const glm::ivec2 &pos, const glm::ivec2 &size, con
 	int y = (pos.y + size.y / 2) / tileSize.y;
 
 	if (leftright){
-		if (map[(y - 1)*mapSize.x + x0] == 27){
+		if (map[(y - 1)*screenSize.x + x0] == 27){
 			for (int i = 27; i < 34; i++){
-				if (map[(y - 1)*mapSize.x + x0 - 1] == i) return false;
+				if (map[(y - 1)*screenSize.x + x0 - 1] == i) return false;
 
 			}
 			if (float(pos.x + size.x / 4 + 10) - float((x0)*tileSize.x) <= 15) return true;
 		}
 	}
 	else {
-		if (map[(y - 1)*mapSize.x + x1] == 27){
+		if (map[(y - 1)*screenSize.x + x1] == 27){
 			for (int i = 27; i < 34; i++){
-				if (map[(y - 1) * mapSize.x + x1 + 1] == i) return false;
+				if (map[(y - 1) * screenSize.x + x1 + 1] == i) return false;
 			}
 			if (float((x1 + 1)*tileSize.x) - float(pos.x + size.x / 4) - 10 <= 5) return true;
 		}
@@ -424,9 +400,9 @@ glm::ivec2 TileMap::getnXnY(){
 
 vector<glm::ivec2> TileMap::getTorchsPos(){
 	vector<glm::ivec2> pos;
-	for (int i = 0; i < mapSize.x; i++){
-		for (int j = 0; j < mapSize.y; j++)
-			if (map[j*mapSize.x+i] == 1 || map[j*mapSize.x + i] == 15){
+	for (int i = 0; i < screenSize.x; i++){
+		for (int j = 0; j < screenSize.y; j++)
+			if (map[j*screenSize.x + i] == 1 || map[j*screenSize.x + i] == 15){
 				glm::ivec2 p;
 				p.x = i;
 				p.y = j;
@@ -438,9 +414,9 @@ vector<glm::ivec2> TileMap::getTorchsPos(){
 
 vector<glm::ivec2> TileMap::getDoorsPos(){
 	vector<glm::ivec2> pos;
-	for (int i = 0; i < mapSize.x; i++){
-		for (int j = 0; j < mapSize.y; j++)
-			if (map[j*mapSize.x + i] == 11 || map[j*mapSize.x + i] == 18 || map[j*mapSize.x + i] == 23){
+	for (int i = 0; i < screenSize.x; i++){
+		for (int j = 0; j < screenSize.y; j++)
+			if (map[j*screenSize.x + i] == 11 || map[j*screenSize.x + i] == 18 || map[j*screenSize.x + i] == 23){
 				glm::ivec2 p;
 				p.x = i;
 				p.y = j;
@@ -452,9 +428,9 @@ vector<glm::ivec2> TileMap::getDoorsPos(){
 
 vector<glm::ivec2> TileMap::getTrapsPos(){
 	vector<glm::ivec2> pos;
-	for (int i = 0; i < mapSize.x; i++){
-		for (int j = 0; j < mapSize.y; j++)
-			if (map[j*mapSize.x + i] == 6){
+	for (int i = 0; i < screenSize.x; i++){
+		for (int j = 0; j < screenSize.y; j++)
+			if (map[j*screenSize.x + i] == 6){
 				glm::ivec2 p;
 				p.x = i;
 				p.y = j;
@@ -466,9 +442,9 @@ vector<glm::ivec2> TileMap::getTrapsPos(){
 
 vector<glm::ivec2> TileMap::getLandsPos(){
 	vector<glm::ivec2> pos;
-	for (int i = 0; i < mapSize.x; i++){
-		for (int j = 0; j < mapSize.y; j++)
-			if (map[j*mapSize.x + i] == 9){
+	for (int i = 0; i < screenSize.x; i++){
+		for (int j = 0; j < screenSize.y; j++)
+			if (map[j*screenSize.x + i] == 9){
 				glm::ivec2 p;
 				p.x = i;
 				p.y = j;
@@ -479,9 +455,9 @@ vector<glm::ivec2> TileMap::getLandsPos(){
 }
 
 void TileMap::setTile(glm::ivec2 pos, int tile){
-	map[pos.y*mapSize.x + pos.x] = tile;
+	map[pos.y*screenSize.x + pos.x] = tile;
 }
 
 int TileMap::getTile(glm::ivec2 pos) {
-	return map[pos.y*mapSize.x + pos.x];
+	return map[pos.y*screenSize.x + pos.x];
 }

@@ -310,24 +310,6 @@ void Boss::update(int deltaTime, glm::vec2 posPlayer, int anim, int key, int vid
 	}
 }
 
-void Boss::update(int deltaTime, glm::vec2 posTrap, int anim, int key){
-	if (vida > 0){
-		if (anim == 0 && (key == 3 || key == 4 || key == 5 || key == 6 || key == 7)){
-			if (((posBoss.x + 32 <= posTrap.x + 31 + 16) && (posBoss.x + 32 >= posTrap.x + 31 + 10)) && (int((posBoss.y + 32) / 64) == int((posTrap.y + 32) / 64 + 1))){
-				vida = 0;
-				if (leftright){
-					if (sprite->animation() != DIE_LEFT)
-						sprite->changeAnimation(DIE_LEFT);
-				}
-				else {
-					if (sprite->animation() != DIE_RIGHT)
-						sprite->changeAnimation(DIE_RIGHT);
-				}
-			}
-		}
-	}
-}
-
 void Boss::render(){
 	sprite->render();
 }

@@ -6,8 +6,8 @@
 #include "TileMap.h"
 
 
-// Player is basically a Sprite that represents the player. As such it has
-// all properties it needs to track its movement, jumping, and collisions.
+// Soldier is basically a Sprite that represents an enemy. As such it has
+// all properties it needs to track its movement, action and collisions.
 
 
 class Soldier
@@ -16,8 +16,8 @@ class Soldier
 public:
 
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, bool leftright);
-	void update(int deltaTime, glm::vec2 posPlayer, int animPlayer, int keyFrameAnim, int vidaPlayer);
-	void update(int deltaTime, glm::vec2 posEnemy, int anim, int key);
+	void update(int deltaTime, glm::vec2 posPlayer, int animPlayer, int keyFrameAnim, int vidaPlayer); //update normal
+	void update(int deltaTime, glm::vec2 posEnemy, int anim, int key); //update trap
 	void render();
 
 	void setTileMap(TileMap *tileMap);
