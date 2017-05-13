@@ -13,7 +13,7 @@ class gameover
 
 public:
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
-	void update(int deltaTime, bool lvl);
+	void update(int deltaTime, int lvl);
 	void render();
 
 	void setPosition(const glm::vec2 &pos);

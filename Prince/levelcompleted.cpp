@@ -25,7 +25,7 @@ void levelcompleted::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderPro
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posLC.x), float(tileMapDispl.y + posLC.y)));
 }
 
-void levelcompleted::update(int deltaTime, bool lvl){
+void levelcompleted::update(int deltaTime, int lvl){
 
 	sprite->update(deltaTime);
 	if (Game::instance().getKey(13)){

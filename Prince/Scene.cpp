@@ -69,19 +69,18 @@ Scene::~Scene()
 	
 }
 
-
-void Scene::init(bool lvl)
+void Scene::init(int lvl)
 {
 	posM.x = 0;
 	posM.y = 0;
-	nivell = lvl; 
+	level = lvl; 
 	init_teleport();
 	initShaders();
 
-	if (nivell){
+	if (level == 1){
 		map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM);
 	}
-	else{
+	else if (level == 2){
 		map = TileMap::createTileMap("levels/level02.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM);
 	}
 
@@ -295,7 +294,7 @@ void Scene::update(int deltaTime)
 		go->setPosition(glm::vec2(30, 60));
 	}
 	if (contGAMEOVER == -1){
-		go->update(deltaTime, nivell);
+		go->update(deltaTime, level);
 	}
 
 	//Update vida soldier
@@ -314,13 +313,13 @@ void Scene::update(int deltaTime)
 		vidab->update(deltaTime, boss->getVida());
 		if (boss->getVida() == 0){
 			bossdead = true;
-			if (nivell) map->changeTile(texProgram, glm::ivec2(8, 3), posM, 42); //When you kill boss, new green tp appear.
-			else map->changeTile(texProgram, glm::ivec2(8, 3), posM, 42);
+			if (level == 1) map->changeTile(texProgram, glm::ivec2(8, 3), posM, 42); //When you kill boss, new green tp appear.
+			else if (level == 2) map->changeTile(texProgram, glm::ivec2(8, 3), posM, 42);
 		}
 	}
 
 	//How to end the level
-	if (nivell){
+	if (level == 1){
 		if (posM.x == 4 && posM.y == 2){
 			if (player->getPositionTile().x == 8 && player->getPositionTile().y == 3){ // If you use green tp you go back main menu.
 				if (bossdead){
@@ -332,7 +331,7 @@ void Scene::update(int deltaTime)
 			}
 		}
 	}
-	else {
+	else if (level == 2) {
 		if (posM.x == 3 && posM.y == 3){
 			if (player->getPositionTile().x == 8 && player->getPositionTile().y == 3){
 				if (bossdead){
@@ -345,7 +344,7 @@ void Scene::update(int deltaTime)
 		}
 	}
 
-	if (LEVELCOMPLETED) lc->update(deltaTime, nivell);
+	if (LEVELCOMPLETED) lc->update(deltaTime, level);
 
 	//When lvl goes out limits of the screen, we put him another one
 	if (p.x > 294) init_screen(1, 0);           
@@ -451,7 +450,7 @@ void Scene::initShaders()
 }
 
 void Scene::init_teleport() {
-	if (nivell){						//CHOOSE TP LVL 1
+	if (level == 1){						//CHOOSE TP LVL 1
 
 		amtp = new glm::ivec2[8];
 		amtp[0].x = 1; amtp[0].y = 0;
@@ -497,7 +496,7 @@ void Scene::init_teleport() {
 
 
 	}
-	else {								//DECIDIR TP LVL2
+	else if (level == 2) {								//DECIDIR TP LVL2
 		
 		amtp = new glm::ivec2[6];
 		amtp[0].x = 2; amtp[0].y = 0;
@@ -536,14 +535,14 @@ void Scene::init_teleport() {
 
 void Scene::teleport(glm::ivec2 posT) {
 	int tp = 0;
-	if (nivell){
+	if (level == 1){
 		for (int i = 0; i < 8; i++) {
 			if (aptp[i].x == posT.x && aptp[i].y == posT.y && amtp[i].x == posM.x && amtp[i].y == posM.y) { //TP LVL1
 				tp = i;
 			}
 		}
 	}
-	else {
+	else if (level == 2){
 		for (int i = 0; i < 6; i++) {
 			if (aptp[i].x == posT.x && aptp[i].y == posT.y && amtp[i].x == posM.x && amtp[i].y == posM.y) { //TP LVL2
 				tp = i;
@@ -562,7 +561,7 @@ void Scene::init_soldiers(){
 		soldiers[i] = -1;
 	}
 	
-	if (nivell){
+	if (level == 1){
 		posSoldierScreen = new glm::ivec2[8];
 		dirSoldier = new bool[8];
 		
@@ -617,7 +616,7 @@ void Scene::init_soldiers(){
 			soldiersvec.push_back(soldier);
 		}
 	}
-	else{
+	else if (level == 2){
 
 		posSoldierScreen = new glm::ivec2[7];
 		dirSoldier = new bool[7];
@@ -673,14 +672,14 @@ void Scene::init_boss(){
 	posMapBoss.x = -1;
 	posMapBoss.y = -1;
 
-	if (nivell){
+	if (level == 1){
 		posMapBoss.x = 4;  // A MANO AQUI DECIDIR
 		posMapBoss.y = 2; // DONDE VA EL BOSS LVL1
 		posTileBoss.x = 4; //TIENE QUE HAVER 1 POR MAPA  I CUANDO MUERE APARECE EL TP VERDE Q TE LLEVA AL MENU PRINCIPAL
 		posTileBoss.y = 3;
 		dirBoss = false;
 	}
-	else {
+	else if (level == 2) {
 		posMapBoss.x = 3;  // A MANO AQUI DECIDIR
 		posMapBoss.y = 3; // DONDE VA EL BOSS LV1
 		posTileBoss.x = 4;

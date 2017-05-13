@@ -25,7 +25,7 @@ void gameover::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posGO.x), float(tileMapDispl.y + posGO.y)));
 }
 
-void gameover::update(int deltaTime, bool lvl){
+void gameover::update(int deltaTime, int lvl){
 	
 	sprite->update(deltaTime);
 	if (Game::instance().getKey(13)){

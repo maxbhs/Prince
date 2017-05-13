@@ -27,7 +27,7 @@ public:
 		return G;
 	}
 	
-	void init(bool lvl, bool menu);
+	void init(int lvl, bool menu);
 	bool update(int deltaTime);
 	void render();
 	

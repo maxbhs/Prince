@@ -31,7 +31,7 @@ public:
 	~Scene();
 
 	
-	void init(bool lvl);  //init is called only one time per level
+	void init(int lvl);  //init is called only one time per level
 	void init_screen(int mov, int tp);//when you pass throught different screens in the same lvl init2 is called
 
 	void update(int deltaTime);
@@ -59,7 +59,7 @@ private:
 	float currentTime;
 	glm::mat4 projection;
 	glm::ivec2 posM;
-	bool nivell;
+	int level;
 
 	bool torchs, doors, traps, lands, puls;
 	bool *lands2;

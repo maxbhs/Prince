@@ -32,12 +32,12 @@ void menu::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 void menu::update(int deltaTime){
 	sprite->update(deltaTime);
 	if (Game::instance().getKey(int('q')) && !ins && !cred){
-		Game::instance().init(true, false);
+		Game::instance().init(1, false);
 		ins = false;
 		cred = false;
 	}
 	else if (Game::instance().getKey(int('w')) && !ins && !cred){
-		Game::instance().init(false, false);
+		Game::instance().init(2, false);
 		ins = false;
 		cred = false;
 	}

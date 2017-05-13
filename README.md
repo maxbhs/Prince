@@ -1,38 +1,38 @@
+
 Daniel Medina Tolra,
 Max Melendez Llorens,
 
 # PRINCE OF PERSIA REMAKE
 
-## Funcionalitats:
-- Interfície gràfica que mostra la vida, teva i dels enemics.
-- Dos nivells de distribució diferent.
-- Dues de les trampes que existeixen en el joc: Terra que cau i la trampa amb doble fulla.
-- Dos enemics amb representacions i habilitats diferents: Soldier i Boss.
-- El príncep pot lluitar amb l'espasa amb els enemics que es troba de manera
-similar a com ho fa en el joc original.
+## Features:
+- Graphical interface that shows life and your enemies.
+- Two different levels.
+- Two of the traps that exist in the game: deep pits and guillotines.
+- Two enemies with different abilities and performances: Soldier and Boss.
+- Prince can fight with enemies with the sword very
+similar to how it does in the original game.
 
-- Estructura bàsica de 4 pantalles: menú principal, jugar, instruccions, crèdits.
-- Animació de les torxes.
-- Possibilitat de llançar els enemics a les dues trampes.
+- Basic structure of four screens: the main menu, play, instructions, credits.
+- Animation torches.
+- Possibility to throw enemies to both traps.
 
-- Teleport: Per tot el mapa hi ha uns cercles blaus que et teletransporten a uns cercles
-vermells.
+- Teleport: Across the map there are some blue circles that teleport you to red circles.
 
-## Instruccions:
+## Instructions:
 
-- Corre dreta: Mantenir apretada fletxa direcció dreta.
-- Corre esquerra: Mantenir apretada fletxa direcció esquerra.
-- Caminar dreta: Polsar fletxa direcció dreta.
-- Caminar esquerra: Polsar fletxa direcció esquerra.
-- Saltar cap amunt: Polsar fletxa direcció amunt (Si pot escalar escalara).
-- Saltar dreta o esquerra curt: (Estant aturat) Mantenir fletxa direcció amunt + fletxa direcció dreta/esquerra
-- Saltar dreta o esquerra llarg: (En moviment) Mantenir fletxa direcció amunt + fletxa direcció dreta/esquerra
-- Ajupir-se: Polsar fletxa direcció avall.
-- Posició combat: space.
-- Atacar: (En posició combat) fletxa direcció amunt.
-- Atura atac enemic: (En posició combat) fletxa direcció avall.
-- C : (En posició combat i amb enemic a prop) Canviar direcció atac.
+- Run right: Hold right button
+- Run Left: Hold left button
+- Walk Right: Press once right.
+- Walk left: Press once left.
+- Jump up: Press up, player will jump when realese (If you can climb climb).
+- Jump right or left short: (while standing) Press up +  right / left (When realese up button rigt/left has to be pressed)
+- Jump right or left over: (Moving) Press up + right / left (When realese up button rigt/left has to be pressed)
+- Crouch: down button
+- Combat position: space.
+- Attacking: (In combat) up button.
+- Parri (In combat) down button.
+- Switch Attack direction: (In combat) C.
 
-## Jugar:
-- Descarga la capreta freeprince
-- Executa el freeprince.exe 
+## Play:
+- download freeprince folder
+- Run freeprince.exe
