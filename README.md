@@ -5,14 +5,14 @@ Max Melendez Llorens,
 # PRINCE OF PERSIA REMAKE
 
 ## Features:
-- Graphical interface that shows life and your enemies.
+- Graphical interface that shows your life and your enemies life.
 - Two different levels.
-- Two of the traps that exist in the game: deep pits and guillotines.
+- Two traps from original game: deep pits and guillotines.
 - Two enemies with different abilities and performances: Soldier and Boss.
 - Prince can fight with enemies with the sword very
 similar to how it does in the original game.
 
-- Basic structure of four screens: the main menu, play, instructions, credits.
+- Basic structure with four screens: main menu, play, instructions, credits.
 - Animation torches.
 - Possibility to throw enemies to both traps.
 
