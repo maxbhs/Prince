@@ -41,7 +41,12 @@ void menu::update(int deltaTime){
 		ins = false;
 		cred = false;
 	}
-	else if (Game::instance().getKey(int('e')) && !cred){
+	else if (Game::instance().getKey(int('e')) && !ins && !cred){
+		Game::instance().init(3, false);
+		ins = false;
+		cred = false;
+	}
+	else if (Game::instance().getKey(int('r')) && !cred){
 		instruc = new instruccions();
 		instruc->init(glm::ivec2(0, 0), texProgram);
 		instruc->setPosition(glm::vec2(0, 0));
@@ -49,7 +54,7 @@ void menu::update(int deltaTime){
 		cred = false;
 
 	}
-	else if (Game::instance().getKey(int('r')) && !ins){
+	else if (Game::instance().getKey(int('t')) && !ins){
 		credit = new credits();
 		credit->init(glm::ivec2(0, 0), texProgram);
 		credit->setPosition(glm::vec2(0, 0));

@@ -83,6 +83,9 @@ void Scene::init(int lvl)
 	else if (level == 2){
 		map = TileMap::createTileMap("levels/level02.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM);
 	}
+	else if (level == 3){
+		map = TileMap::createTileMap("levels/level03.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, posM);
+	}
 
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -228,7 +231,7 @@ void Scene::update(int deltaTime)
 
 	//Open the door if player stay on the button
 	if (map->getTile(pt) == 13) {
-		map->prepareArrayTile(texProgram, pt, 36);
+		if (!puls) map->prepareArrayTile(texProgram, pt, 36);
 		puls = true;
 	}
 	else puls = false;
@@ -332,6 +335,18 @@ void Scene::update(int deltaTime)
 		}
 	}
 	else if (level == 2) {
+		if (posM.x == 3 && posM.y == 3){
+			if (player->getPositionTile().x == 8 && player->getPositionTile().y == 3){
+				if (bossdead){
+					lc = new levelcompleted();
+					lc->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+					lc->setPosition(glm::vec2(30, 60));
+					LEVELCOMPLETED = true;
+				}
+			}
+		}
+	}
+	else if (level == 3){
 		if (posM.x == 3 && posM.y == 3){
 			if (player->getPositionTile().x == 8 && player->getPositionTile().y == 3){
 				if (bossdead){
@@ -533,6 +548,9 @@ void Scene::init_teleport() {
 		rptp[5].x = 2; rptp[5].y = 1;
 
 	}
+	else if (level == 3){
+	
+	}
 }
 
 void Scene::teleport(glm::ivec2 posT) {
@@ -658,6 +676,9 @@ void Scene::init_soldiers(){
 		}
 
 	}
+	else if (level == 3){
+	
+	}
 }
 
 void Scene::init_boss(){
@@ -678,6 +699,9 @@ void Scene::init_boss(){
 		posTileBoss.x = 4;
 		posTileBoss.y = 3;
 		dirBoss = false;
+	}
+	else if (level == 3){
+	
 	}
 
 	if ((posM.x == posMapBoss.x && posM.y == posMapBoss.y) && !bossdead){
