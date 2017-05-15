@@ -145,7 +145,7 @@ void Boss::update(int deltaTime, glm::vec2 posPlayer, int anim, int key, int vid
 					if (sprite->animation() != ATTACK_LEFT_ULTI && sprite->animation() != ATTACK_LEFT)sprite->changeAnimation(ATTACK_LEFT);
 					cd = 100;
 				}
-				else if (anim == 57 && key == 4 && contkey == 0){
+				else if (anim == 55 && key == 4 && contkey == 0){
 					int x = rand() % 2;
 					if (x == 0){
 						if (sprite->animation() != ATTACK_LEFT_ULTI)
@@ -228,7 +228,7 @@ void Boss::update(int deltaTime, glm::vec2 posPlayer, int anim, int key, int vid
 					if (sprite->animation() != ATTACK_RIGHT_ULTI && sprite->animation() != ATTACK_RIGHT)sprite->changeAnimation(ATTACK_RIGHT);
 					cd = 100;
 				}
-				else if (anim == 56 && key == 4 && contkey == 0){
+				else if (anim == 54 && key == 4 && contkey == 0){
 					int x = rand() % 2;
 					if (x == 0){
 						if (sprite->animation() != ATTACK_RIGHT_ULTI)

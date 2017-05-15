@@ -1,6 +1,6 @@
 
 Daniel Medina Tolra,
-Max Melendez Llorens,
+Max Melendez Llorens
 
 # PRINCE OF PERSIA REMAKE
 

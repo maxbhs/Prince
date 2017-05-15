@@ -118,7 +118,7 @@ void Soldier::update(int deltaTime, glm::vec2 posPlayer, int anim, int key, int 
 					if (sprite->animation() != ATTACK_LEFT)sprite->changeAnimation(ATTACK_LEFT);
 					cd = 100;
 				}
-				else if (anim == 57 && key == 4 && contkey == 0){
+				else if (anim == 55 && key == 4 && contkey == 0){
 					int x = rand() % 4; 
 					if (x == 0){ 
 						sprite->changeAnimation(PARRI_LEFT);
@@ -183,7 +183,7 @@ void Soldier::update(int deltaTime, glm::vec2 posPlayer, int anim, int key, int 
 					if (sprite->animation() != ATTACK_RIGHT)sprite->changeAnimation(ATTACK_RIGHT);
 					cd = 100;
 				}
-				else if (anim == 56 && key == 4 && contkey == 0){
+				else if (anim == 54 && key == 4 && contkey == 0){
 					int x = rand() % 4;
 					if (x == 0){
 						sprite->changeAnimation(PARRI_RIGHT);

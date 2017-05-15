@@ -216,7 +216,7 @@ void Scene::update(int deltaTime)
 			torchsvec[i].update(deltaTime);
 	}
 
-	//If player syay on heal -- heal interaction
+	//If player stay on heal -- heal interaction
 	if (map->getTile(pt) == 12 && !player->saltando()) {
 		map->changeTile(texProgram, pt, posM,4);
 		player->update(deltaTime, 1);
@@ -259,7 +259,7 @@ void Scene::update(int deltaTime)
 		}
 	}
 
-	//if lands in the scree, lands animation and interaction with player
+	//if lands in the screen, lands animation and interaction with player
 	if (lands){
 		for (int i = 0; i < landsvec.size(); i++){
 			if (lands2[i]){
@@ -280,7 +280,7 @@ void Scene::update(int deltaTime)
 		}
 	}
 
-	//Vida player and die if it is 0 --- GAME OVER
+	//Vida player, if it is 0 --- GAME OVER
 	vidaPlay = player->getVida();
 	if (vidaPlay <= 0){
 		vidaPlay = 0;
@@ -346,7 +346,7 @@ void Scene::update(int deltaTime)
 
 	if (LEVELCOMPLETED) lc->update(deltaTime, level);
 
-	//When lvl goes out limits of the screen, we put him another one
+	//When player goes out limits of the screen, we put him another one
 	if (p.x > 294) init_screen(1, 0);           
 	else if (p.x < -30) init_screen(2, 0);
 	else if (p.y > 160) init_screen(3, 0);
@@ -452,7 +452,8 @@ void Scene::initShaders()
 void Scene::init_teleport() {
 	if (level == 1){						//CHOOSE TP LVL 1
 
-		amtp = new glm::ivec2[8];
+		nTP = 8;
+		amtp = new glm::ivec2[nTP];
 		amtp[0].x = 1; amtp[0].y = 0;
 		amtp[1].x = 0; amtp[1].y = 1;
 		amtp[2].x = 1; amtp[2].y = 2;
@@ -463,7 +464,7 @@ void Scene::init_teleport() {
 		amtp[7].x = 4; amtp[7].y = 1;
 
 
-		aptp = new glm::ivec2[8];		//size of aptp = amtp = rptp = rmtp = Number of teleports
+		aptp = new glm::ivec2[nTP];		//size of aptp = amtp = rptp = rmtp = Number of teleports
 		aptp[0].x = 7; aptp[0].y = 3;   //aptp -- choose tp blue position inside screen.
 		aptp[1].x = 5; aptp[1].y = 1;   //amtp -- choose which screen
 		aptp[2].x = 8; aptp[2].y = 1;   //rptp -- choose tp red position inside map screen.
@@ -474,7 +475,7 @@ void Scene::init_teleport() {
 		aptp[7].x = 9; aptp[7].y = 3;   //tp 0 red is in screen[0,1] position[1,1]
 
 
-		rmtp = new glm::ivec2[8];
+		rmtp = new glm::ivec2[nTP];
 		rmtp[0].x = 0; rmtp[0].y = 1;
 		rmtp[1].x = 1; rmtp[1].y = 0;
 		rmtp[2].x = 0; rmtp[2].y = 3;
@@ -484,7 +485,7 @@ void Scene::init_teleport() {
 		rmtp[6].x = 4; rmtp[6].y = 0;
 		rmtp[7].x = 4; rmtp[7].y = 2;
 
-		rptp = new glm::ivec2[8];
+		rptp = new glm::ivec2[nTP];
 		rptp[0].x = 1; rptp[0].y = 1;
 		rptp[1].x = 3; rptp[1].y = 3;
 		rptp[2].x = 1; rptp[2].y = 3;
@@ -496,9 +497,10 @@ void Scene::init_teleport() {
 
 
 	}
-	else if (level == 2) {								//DECIDIR TP LVL2
+	else if (level == 2) {								//CHOOSE TP LVL2
 		
-		amtp = new glm::ivec2[6];
+		nTP = 6;
+		amtp = new glm::ivec2[nTP];
 		amtp[0].x = 2; amtp[0].y = 0;
 		amtp[1].x = 0; amtp[1].y = 3;
 		amtp[2].x = 2; amtp[2].y = 1;
@@ -506,7 +508,7 @@ void Scene::init_teleport() {
 		amtp[4].x = 4; amtp[4].y = 0;
 		amtp[5].x = 3; amtp[5].y = 2;
 
-		aptp = new glm::ivec2[6];
+		aptp = new glm::ivec2[nTP];
 		aptp[0].x = 7; aptp[0].y = 1;
 		aptp[1].x = 8; aptp[1].y = 3;
 		aptp[2].x = 6; aptp[2].y = 1;
@@ -514,7 +516,7 @@ void Scene::init_teleport() {
 		aptp[4].x = 7; aptp[4].y = 1; 
 		aptp[5].x = 2; aptp[5].y = 3;
 
-		rmtp = new glm::ivec2[6];
+		rmtp = new glm::ivec2[nTP];
 		rmtp[0].x = 0; rmtp[0].y = 2;
 		rmtp[1].x = 3; rmtp[1].y = 0;
 		rmtp[2].x = 3; rmtp[2].y = 1;
@@ -522,7 +524,7 @@ void Scene::init_teleport() {
 		rmtp[4].x = 1; rmtp[4].y = 2;
 		rmtp[5].x = 3; rmtp[5].y = 1;
 
-		rptp = new glm::ivec2[6];
+		rptp = new glm::ivec2[nTP];
 		rptp[0].x = 1; rptp[0].y = 1;
 		rptp[1].x = 2; rptp[1].y = 1;
 		rptp[2].x = 2; rptp[2].y = 1;
@@ -535,18 +537,9 @@ void Scene::init_teleport() {
 
 void Scene::teleport(glm::ivec2 posT) {
 	int tp = 0;
-	if (level == 1){
-		for (int i = 0; i < 8; i++) {
-			if (aptp[i].x == posT.x && aptp[i].y == posT.y && amtp[i].x == posM.x && amtp[i].y == posM.y) { //TP LVL1
-				tp = i;
-			}
-		}
-	}
-	else if (level == 2){
-		for (int i = 0; i < 6; i++) {
-			if (aptp[i].x == posT.x && aptp[i].y == posT.y && amtp[i].x == posM.x && amtp[i].y == posM.y) { //TP LVL2
-				tp = i;
-			}
+	for (int i = 0; i < nTP; i++) {
+		if (aptp[i].x == posT.x && aptp[i].y == posT.y && amtp[i].x == posM.x && amtp[i].y == posM.y) { //TP LVL1
+			tp = i;
 		}
 	}
 	posM.x = rmtp[tp].x;

@@ -60,6 +60,7 @@ private:
 	glm::mat4 projection;
 	glm::ivec2 posM;
 	int level;
+	int nTP;
 
 	bool torchs, doors, traps, lands, puls;
 	bool *lands2;
