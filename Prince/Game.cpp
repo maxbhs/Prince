@@ -8,6 +8,7 @@ void Game::init(int lvl, bool menu)
 	bPlay = true;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	sc = false;
+
 	if (menu){
 		menuprincipal.init();
 	}
