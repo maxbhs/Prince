@@ -318,6 +318,7 @@ void Scene::update(int deltaTime)
 			bossdead = true;
 			if (level == 1) map->changeTile(texProgram, glm::ivec2(8, 3), posM, 42); //When you kill boss, new green tp appear.
 			else if (level == 2) map->changeTile(texProgram, glm::ivec2(8, 3), posM, 42);
+			else map->changeTile(texProgram, glm::ivec2(8, 3), posM, 42);
 		}
 	}
 
@@ -347,7 +348,7 @@ void Scene::update(int deltaTime)
 		}
 	}
 	else if (level == 3){
-		if (posM.x == 3 && posM.y == 3){
+		if (posM.x == 5 && posM.y == 4){
 			if (player->getPositionTile().x == 8 && player->getPositionTile().y == 3){
 				if (bossdead){
 					lc = new levelcompleted();
@@ -549,7 +550,38 @@ void Scene::init_teleport() {
 
 	}
 	else if (level == 3){
-	
+		nTP = 6;
+		amtp = new glm::ivec2[nTP];
+		amtp[0].x = 0; amtp[0].y = 0;
+		amtp[1].x = 0; amtp[1].y = 1;
+		amtp[2].x = 3; amtp[2].y = 0;
+		amtp[3].x = 5; amtp[3].y = 0;
+		amtp[4].x = 2; amtp[4].y = 1;
+		amtp[5].x = 1; amtp[5].y = 2;
+
+		aptp = new glm::ivec2[nTP];
+		aptp[0].x = 1; aptp[0].y = 3;
+		aptp[1].x = 2; aptp[1].y = 1;
+		aptp[2].x = 8; aptp[2].y = 3;
+		aptp[3].x = 7; aptp[3].y = 2;
+		aptp[4].x = 8; aptp[4].y = 3;
+		aptp[5].x = 7; aptp[5].y = 3;
+
+		rmtp = new glm::ivec2[nTP];
+		rmtp[0].x = 0; rmtp[0].y = 1;
+		rmtp[1].x = 3; rmtp[1].y = 0;
+		rmtp[2].x = 3; rmtp[2].y = 0;
+		rmtp[3].x = 4; rmtp[3].y = 1;
+		rmtp[4].x = 4; rmtp[4].y = 2;
+		rmtp[5].x = 0; rmtp[5].y = 3;
+
+		rptp = new glm::ivec2[nTP];
+		rptp[0].x = 8; rptp[0].y = 3;
+		rptp[1].x = 7; rptp[1].y = 1;
+		rptp[2].x = 7; rptp[2].y = 1;
+		rptp[3].x = 3; rptp[3].y = 2;
+		rptp[4].x = 2; rptp[4].y = 3;
+		rptp[5].x = 1; rptp[5].y = 1;
 	}
 }
 
@@ -677,7 +709,43 @@ void Scene::init_soldiers(){
 
 	}
 	else if (level == 3){
+		posSoldierScreen = new glm::ivec2[5];
+		dirSoldier = new bool[5];
+
+		posSoldierScreen[0].x = 5;
+		posSoldierScreen[0].y = 3;
+		dirSoldier[0] = true;
+		soldiers[6] = 0;
+
+		posSoldierScreen[1].x = 4;
+		posSoldierScreen[1].y = 3;
+		dirSoldier[1] = false;
+		soldiers[14] = 1;
+
+		posSoldierScreen[2].x = 3;
+		posSoldierScreen[2].y = 3;
+		dirSoldier[2] = true;
+		soldiers[5] = 2;
+
+		posSoldierScreen[3].x = 5;
+		posSoldierScreen[3].y = 3;
+		dirSoldier[3] = true;
+		soldiers[22] = 3;
+
+		posSoldierScreen[4].x = 4;
+		posSoldierScreen[4].y = 2;
+		dirSoldier[4] = true;
+		soldiers[28] = 4;
+
 	
+
+		for (int i = 0; i < 5; i++){
+			Soldier *soldier = new Soldier();
+			soldier->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, dirSoldier[i]);
+			soldier->setPosition(glm::vec2(posSoldierScreen[i].x * map->getTileSize().x, posSoldierScreen[i].y*map->getTileSize().y + 2));
+			soldier->setTileMap(map);
+			soldiersvec.push_back(soldier);
+		}
 	}
 }
 
@@ -701,7 +769,11 @@ void Scene::init_boss(){
 		dirBoss = false;
 	}
 	else if (level == 3){
-	
+		posMapBoss.x = 5; 
+		posMapBoss.y = 4; 
+		posTileBoss.x = 5;
+		posTileBoss.y = 3;
+		dirBoss = false;
 	}
 
 	if ((posM.x == posMapBoss.x && posM.y == posMapBoss.y) && !bossdead){

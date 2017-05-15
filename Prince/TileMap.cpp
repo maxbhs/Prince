@@ -230,15 +230,15 @@ void TileMap::prepareArrayFront(ShaderProgram &program){
 				pintar = true;
 			}
 			else if (tile == 32 || tile == 33) {
-				//if (tile != 33) tile = 32; //hablarlo con el max i cambiar el tile de la columna SOLA
-				pintar = true; //arreglar el problema
+			
+				pintar = true; 
 			}
 			else if (tile == 29 || tile == 30 || tile == 31) {
 				pintar = true;
 				tile = 39;
 			}
-			else if (tile >= 1 && tile < 26 && map[j * screenSize.x + i - 1] == 27 && tile != 13 && tile != 20 && tile != 11 && tile != 18 && tile != 23) {
-				pintar = true; //ir con cuidado de no salirsa de la matriz!
+			else if (tile >= 1 && tile < 26 && (map[j * screenSize.x + i - 1] == 27 || map[j * screenSize.x + i - 1] == 9) && tile != 13 && tile != 20 && tile != 11 && tile != 18 && tile != 23 && tile != 9) {
+				pintar = true; 
 				tile = 40;
 			}
 			if (pintar) {
