@@ -58,8 +58,6 @@ Scene::~Scene()
 		delete rmtp;
 	if (posSoldierScreen != NULL)
 		delete posSoldierScreen;
-	if (dirSoldier != NULL)
-		delete dirSoldier;
 	if (soldiers != NULL)
 		delete soldiers;
 	if (lands2 != NULL)
